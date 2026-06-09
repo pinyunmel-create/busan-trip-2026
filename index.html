@@ -1496,10 +1496,55 @@
     .pg-imgs::-webkit-scrollbar { height: 3px; }
     .pg-imgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .pg-img-item {
-      flex-shrink: 0; width: 88px; height: 88px;
+      flex-shrink: 0; width: 93px; height: 93px;
       border-radius: 9px; overflow: hidden; cursor: zoom-in;
       background: #f0f0f0; scroll-snap-align: start;
     }
+    /* 折疊 */
+    .pg-stop-name { cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+    .pg-toggle-arrow { font-size: 0.65rem; opacity: 0.7; margin-left: 0.5rem; transition: transform 0.2s; }
+    .pg-stop-body { display: none; }
+    .inspo-spot-body { display: none; }
+    .inspo-spot-header { cursor: pointer; }
+    /* 左滑刪除 */
+    .inspo-swipe-wrap { position: relative; overflow: hidden; border-radius: 14px; margin-bottom: 0.7rem; }
+    .inspo-swipe-del {
+      position: absolute; right: 0; top: 0; bottom: 0; width: 80px;
+      display: flex; align-items: center; justify-content: center;
+      background: #e74c3c; color: #fff; font-size: 0.82rem; font-weight: 700; cursor: pointer;
+      border-radius: 0 14px 14px 0;
+      opacity: 0; pointer-events: none; transition: opacity 0.15s;
+    }
+    .inspo-swipe-del.visible { opacity: 1; pointer-events: auto; }
+    .inspo-spot { margin-bottom: 0; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); touch-action: pan-y; position: relative; }
+    /* 展開後的新增照片按鈕 */
+    .inspo-body-add-btn {
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+      margin: 0.6rem auto 0.2rem; padding: 0.45rem 1.1rem;
+      background: #3a3a40; border: none; border-radius: 100px;
+      color: #fff; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      opacity: 0.82;
+    }
+    .inspo-body-add-btn:hover { opacity: 1; }
+    /* 拍攝靈感 toolbar 按鈕 */
+    .photos-toolbar-btn {
+      background: none; border: 1.5px solid #d0cdc8; border-radius: 100px;
+      padding: 0.28rem 0.8rem; font-size: 0.72rem; color: #666; cursor: pointer;
+      font-family: inherit; font-weight: 600; transition: background 0.15s, color 0.15s;
+    }
+    .photos-toolbar-btn:hover { background: #f0ede8; color: #333; }
+    /* 箭頭 */
+    .inspo-toggle-arrow {
+      font-size: 1.35rem; color: rgba(255,255,255,0.75); margin-left: 0.4rem;
+      display: inline-block; transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+      line-height: 1;
+    }
+    .inspo-toggle-arrow.open { transform: rotate(180deg); }
+    .pg-toggle-arrow {
+      font-size: 1.1rem; opacity: 0.6; margin-left: 0.3rem;
+      display: inline-block; transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
+    }
+    .pg-toggle-arrow.open { transform: rotate(180deg); }
     .pg-img-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity 0.15s; }
     .pg-img-item img:hover { opacity: 0.88; }
     /* Module 2 – inspo spots (clean gray border style) */
@@ -1647,7 +1692,7 @@
     <div class="nav-tab active" onclick="showSection('overview',this)">行程總覽</div>
     <div class="nav-tab" onclick="showSection('itinerary',this)">行程細節</div>
     <div class="nav-tab" onclick="showSection('expenses',this)">花費記帳</div>
-    <div class="nav-tab" onclick="showSection('photos',this);buildPhotoGallery();renderInspoSection()">攝影靈感</div>
+    <div class="nav-tab" onclick="showSection('photos',this);buildPhotoGallery();_inspoOpenIds=new Set();_vlogOpenIds=new Set();renderInspoSection();renderVlogSection()">拍攝靈感</div>
     <div class="nav-tab" onclick="showSection('shopping',this)">必買清單</div>
     <div class="nav-tab" onclick="showSection('tips',this)">景點攻略</div>
     <div class="nav-tab" onclick="showSection('misc',this)">打包＆其他</div>
@@ -4779,12 +4824,16 @@
   </div>
 </div>
 
-<!-- ════════════ 攝影靈感 ════════════ -->
+<!-- ════════════ 拍攝靈感 ════════════ -->
 <div id="photos" class="section">
 
   <!-- Module 1: 行程筆記 -->
   <div class="pg-module-header">
     <div class="pg-mod-dot" style="background:#7B6BBE;"></div>行程筆記
+    <div style="margin-left:auto;display:flex;gap:0.4rem;">
+      <button class="photos-toolbar-btn" onclick="expandAllInspoVlog()">全展開</button>
+      <button class="photos-toolbar-btn" onclick="collapseAllInspoVlog()">全收起</button>
+    </div>
   </div>
   <div id="photo-gallery-content">
     <div class="pg-empty">📷 還沒有照片<br><span>去行程細節各景點點相機圖示上傳照片吧！</span></div>
@@ -4804,6 +4853,25 @@
       <div class="inspo-form-btns">
         <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">新增</button>
         <button class="inspo-cancel-btn" onclick="closeInspoAddForm()">取消</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="pg-divider"></div>
+
+  <!-- Module 3: 三人VLOG腳本靈感 -->
+  <div class="pg-module-header">
+    <div class="pg-mod-dot" style="background:#9a599a;"></div>三人VLOG腳本靈感
+  </div>
+  <div id="vlog-content"></div>
+  <div class="inspo-add-spot-wrap">
+    <button class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
+    <div class="inspo-add-form" id="vlog-add-form">
+      <input type="text" id="vlog-topic-input" placeholder="主題名稱（例：海邊開場鏡頭）" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
+      <div class="inspo-form-btns">
+        <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">新增</button>
+        <button class="inspo-cancel-btn" onclick="closeVlogAddForm()">取消</button>
       </div>
     </div>
   </div>
@@ -5936,6 +6004,93 @@ function toggleOvCard(id) {
 }
 
 /* ─── Navigation ─── */
+/* ══════════════ 折疊 ══════════════ */
+function togglePgStop(el) {
+  var body = el.parentElement.querySelector('.pg-stop-body');
+  if (!body) return;
+  var open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  var arrow = el.querySelector('.pg-toggle-arrow');
+  if (arrow) arrow.classList.toggle('open', !open);
+}
+var _inspoOpenIds = new Set();
+var _vlogOpenIds = new Set();
+function expandAllInspoVlog() {
+  // Module 1: 行程筆記（直接操作 DOM）
+  document.querySelectorAll('#photo-gallery-content .pg-stop-body').forEach(function(body) {
+    body.style.display = 'block';
+    var arrow = body.previousElementSibling && body.previousElementSibling.querySelector('.pg-toggle-arrow');
+    if (arrow) arrow.classList.add('open');
+  });
+  // Module 2 & 3
+  _inspoData.forEach(function(s) { _inspoOpenIds.add(s.id); });
+  _vlogData.forEach(function(t) { _vlogOpenIds.add(t.id); });
+  renderInspoSection(); renderVlogSection();
+}
+function collapseAllInspoVlog() {
+  // Module 1: 行程筆記
+  document.querySelectorAll('#photo-gallery-content .pg-stop-body').forEach(function(body) {
+    body.style.display = 'none';
+    var arrow = body.previousElementSibling && body.previousElementSibling.querySelector('.pg-toggle-arrow');
+    if (arrow) arrow.classList.remove('open');
+  });
+  // Module 2 & 3
+  _inspoOpenIds = new Set(); _vlogOpenIds = new Set();
+  renderInspoSection(); renderVlogSection();
+}
+function toggleInspoSpot(spotId) {
+  var body = document.getElementById('inspo-body-' + spotId);
+  var arrow = document.getElementById('inspo-arrow-' + spotId);
+  if (!body) return;
+  var open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.classList.toggle('open', !open);
+  if (open) _inspoOpenIds.delete(spotId); else _inspoOpenIds.add(spotId);
+}
+function toggleVlogSpot(topicId) {
+  var body = document.getElementById('vlog-body-' + topicId);
+  var arrow = document.getElementById('vlog-arrow-' + topicId);
+  if (!body) return;
+  var open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.classList.toggle('open', !open);
+  if (open) _vlogOpenIds.delete(topicId); else _vlogOpenIds.add(topicId);
+}
+function _attachCardSwipe(card, onDelete) {
+  var startX = 0, curX = 0, swiped = false;
+  function _delZone() { return card.parentElement ? card.parentElement.querySelector('.inspo-swipe-del') : null; }
+  card.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX; curX = 0; swiped = false;
+  }, { passive: true });
+  card.addEventListener('touchmove', function(e) {
+    curX = e.touches[0].clientX - startX;
+    if (curX < -5) {
+      card.style.transform = 'translateX(' + Math.max(curX, -80) + 'px)';
+      var dz = _delZone(); if (dz) dz.classList.add('visible');
+    } else if (curX > 5) {
+      card.style.transform = ''; swiped = false;
+      var dz = _delZone(); if (dz) dz.classList.remove('visible');
+    }
+    if (curX < -50) swiped = true;
+  }, { passive: true });
+  card.addEventListener('touchend', function() {
+    if (swiped) {
+      card.style.transform = 'translateX(-80px)';
+      var dz = _delZone(); if (dz) dz.classList.add('visible');
+    } else {
+      card.style.transform = '';
+      var dz = _delZone(); if (dz) dz.classList.remove('visible');
+    }
+  });
+  card.addEventListener('click', function(e) {
+    if (swiped) {
+      card.style.transform = ''; swiped = false;
+      var dz = _delZone(); if (dz) dz.classList.remove('visible');
+      e.stopPropagation();
+    }
+  });
+}
+
 /* ══════════════ MODULE 2: 拍照靈感 ══════════════ */
 var _inspoData = [];
 var _inspoColors = ['#ac9469', '#d29894', '#C4644A', '#7B6BBE', '#c8b86a', '#9a599a'];
@@ -5975,37 +6130,23 @@ function renderInspoSection() {
     var acts = document.createElement('div');
     acts.className = 'inspo-spot-actions';
 
-    var addBtn = document.createElement('button');
-    addBtn.className = 'inspo-add-photo-btn';
-    addBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
-    addBtn.onclick = (function(sid) { return function() { document.getElementById('inspo-file-' + sid).click(); }; })(spot.id);
-
-    var fileInput = document.createElement('input');
-    fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
-    fileInput.style.display = 'none'; fileInput.id = 'inspo-file-' + spot.id;
-    fileInput.onchange = (function(sid) { return function() { handleInspoUpload(sid, this); }; })(spot.id);
-
-    var delBtn = document.createElement('button');
-    delBtn.className = 'inspo-del-btn';
-    delBtn.textContent = '✕';
-    delBtn.title = '刪除景點';
-    delBtn.onclick = (function(sid) { return function() { deleteInspoSpot(sid); }; })(spot.id);
-
-    acts.appendChild(addBtn);
-    acts.appendChild(fileInput);
-    acts.appendChild(delBtn);
+    var arrow = document.createElement('span');
+    arrow.className = 'inspo-toggle-arrow';
+    arrow.id = 'inspo-arrow-' + spot.id;
+    arrow.textContent = '▾';
+    acts.appendChild(arrow);
+    hdr.onclick = (function(sid) { return function() { toggleInspoSpot(sid); }; })(spot.id);
     hdr.appendChild(hdrLeft); hdr.appendChild(acts);
     card.appendChild(hdr);
 
-    // Body
+    // Body (折疊，預設依 _inspoOpenIds 決定)
     var body = document.createElement('div');
     body.className = 'inspo-spot-body';
-    if (!spot.photos || spot.photos.length === 0) {
-      var emp2 = document.createElement('div');
-      emp2.className = 'inspo-spot-empty';
-      emp2.textContent = '點「新增照片」上傳拍照靈感';
-      body.appendChild(emp2);
-    } else {
+    body.id = 'inspo-body-' + spot.id;
+    var isOpen = _inspoOpenIds.has(spot.id);
+    body.style.display = isOpen ? 'block' : 'none';
+    if (isOpen) arrow.classList.add('open');
+    if (spot.photos && spot.photos.length > 0) {
       var strip = document.createElement('div');
       strip.className = 'pg-imgs';
       spot.photos.forEach(function(src) {
@@ -6019,8 +6160,31 @@ function renderInspoSection() {
       });
       body.appendChild(strip);
     }
+    // 新增照片按鈕放在 body 底部
+    var addBtn = document.createElement('button');
+    addBtn.className = 'inspo-body-add-btn';
+    addBtn.title = '新增照片';
+    addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
+    fileInput.style.display = 'none'; fileInput.id = 'inspo-file-' + spot.id;
+    fileInput.onchange = (function(sid) { return function() { handleInspoUpload(sid, this); }; })(spot.id);
+    addBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); document.getElementById('inspo-file-' + sid).click(); }; })(spot.id);
+    body.appendChild(addBtn);
+    body.appendChild(fileInput);
     card.appendChild(body);
-    container.appendChild(card);
+
+    // 左滑刪除
+    var wrap = document.createElement('div');
+    wrap.className = 'inspo-swipe-wrap';
+    var delZone = document.createElement('div');
+    delZone.className = 'inspo-swipe-del';
+    delZone.textContent = '刪除';
+    delZone.onclick = (function(sid) { return function() { deleteInspoSpot(sid); }; })(spot.id);
+    wrap.appendChild(delZone);
+    wrap.appendChild(card);
+    _attachCardSwipe(card, null);
+    container.appendChild(wrap);
   });
 }
 
@@ -6089,6 +6253,158 @@ function handleInspoUpload(spotId, input) {
   input.value = '';
 }
 
+/* ══════════════ MODULE 3: VLOG腳本靈感 ══════════════ */
+var _vlogData = [];
+try { _vlogData = JSON.parse(localStorage.getItem('busan-vlog-v1') || '[]'); } catch(e) { _vlogData = []; }
+
+function _saveVlogLocal() { localStorage.setItem('busan-vlog-v1', JSON.stringify(_vlogData)); }
+
+function renderVlogSection() {
+  var container = document.getElementById('vlog-content');
+  if (!container) return;
+  container.innerHTML = '';
+  if (_vlogData.length === 0) {
+    var emp = document.createElement('div');
+    emp.className = 'pg-empty';
+    emp.innerHTML = '🎬 還沒有腳本靈感<br><span>新增主題，上傳靈感參考照片！</span>';
+    container.appendChild(emp);
+    return;
+  }
+  _vlogData.forEach(function(topic) {
+    var card = document.createElement('div');
+    card.className = 'inspo-spot';
+    card.id = 'vlog-spot-' + topic.id;
+
+    var hdr = document.createElement('div');
+    hdr.className = 'inspo-spot-header';
+
+    var hdrLeft = document.createElement('div');
+    hdrLeft.className = 'inspo-spot-header-left';
+    var nm = document.createElement('div');
+    nm.className = 'inspo-spot-name';
+    nm.textContent = topic.topic;
+    hdrLeft.appendChild(nm);
+
+    var acts = document.createElement('div');
+    acts.className = 'inspo-spot-actions';
+
+    var arrowSpan = document.createElement('span');
+    arrowSpan.className = 'inspo-toggle-arrow';
+    arrowSpan.id = 'vlog-arrow-' + topic.id;
+    arrowSpan.textContent = '▾';
+
+    acts.appendChild(arrowSpan);
+    hdr.appendChild(hdrLeft); hdr.appendChild(acts);
+    hdr.onclick = (function(tid) { return function() { toggleVlogSpot(tid); }; })(topic.id);
+    card.appendChild(hdr);
+
+    var body = document.createElement('div');
+    body.className = 'inspo-spot-body';
+    body.id = 'vlog-body-' + topic.id;
+    var isOpen = _vlogOpenIds.has(topic.id);
+    body.style.display = isOpen ? 'block' : 'none';
+    if (isOpen) arrowSpan.classList.add('open');
+    if (topic.photos && topic.photos.length > 0) {
+      var strip = document.createElement('div');
+      strip.className = 'pg-imgs';
+      topic.photos.forEach(function(src) {
+        var item = document.createElement('div');
+        item.className = 'pg-img-item';
+        item.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
+        var img = document.createElement('img');
+        img.src = src; img.loading = 'lazy';
+        item.appendChild(img); strip.appendChild(item);
+      });
+      body.appendChild(strip);
+    }
+    // 新增照片按鈕放在 body 底部
+    var addBtn = document.createElement('button');
+    addBtn.className = 'inspo-body-add-btn';
+    addBtn.title = '新增照片';
+    addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
+    fileInput.style.display = 'none'; fileInput.id = 'vlog-file-' + topic.id;
+    fileInput.onchange = (function(tid) { return function() { handleVlogUpload(tid, this); }; })(topic.id);
+    addBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); document.getElementById('vlog-file-' + tid).click(); }; })(topic.id);
+    body.appendChild(addBtn);
+    body.appendChild(fileInput);
+    card.appendChild(body);
+
+    // 左滑刪除
+    var wrap = document.createElement('div');
+    wrap.className = 'inspo-swipe-wrap';
+    var delZone = document.createElement('div');
+    delZone.className = 'inspo-swipe-del';
+    delZone.textContent = '刪除';
+    delZone.onclick = (function(tid) { return function() { deleteVlogTopic(tid); }; })(topic.id);
+    wrap.appendChild(delZone);
+    wrap.appendChild(card);
+    _attachCardSwipe(card, null);
+    container.appendChild(wrap);
+  });
+}
+
+function openVlogAddForm() {
+  var form = document.getElementById('vlog-add-form');
+  var btn = form.previousElementSibling;
+  form.classList.add('open'); if (btn) btn.style.display = 'none';
+  setTimeout(function() { var inp = document.getElementById('vlog-topic-input'); if (inp) inp.focus(); }, 50);
+}
+function closeVlogAddForm() {
+  var form = document.getElementById('vlog-add-form');
+  var btn = form.previousElementSibling;
+  form.classList.remove('open'); if (btn) btn.style.display = '';
+  var inp = document.getElementById('vlog-topic-input');
+  if (inp) inp.value = '';
+}
+function confirmAddVlogTopic() {
+  var inp = document.getElementById('vlog-topic-input');
+  var name = inp ? inp.value.trim() : '';
+  if (!name) return;
+  _vlogData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), topic: name, photos: [] });
+  _saveVlogLocal();
+  if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
+  closeVlogAddForm();
+  renderVlogSection();
+}
+function deleteVlogTopic(topicId) {
+  _vlogData = _vlogData.filter(function(t) { return t.id !== topicId; });
+  _saveVlogLocal();
+  if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
+  renderVlogSection();
+}
+function handleVlogUpload(topicId, input) {
+  var topic = _vlogData.find(function(t) { return t.id === topicId; });
+  if (!topic || !input.files || !input.files.length) return;
+  var files = Array.from(input.files).filter(function(f) { return f.type.startsWith('image/'); });
+  var pending = files.length;
+  if (pending === 0) return;
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var dataUrl = ev.target.result;
+      if (typeof _fst !== 'undefined') {
+        var path = 'vlog-imgs/' + topicId + '/' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        _fst.ref(path).putString(dataUrl, 'data_url').then(function() {
+          return _fst.ref(path).getDownloadURL();
+        }).then(function(url) {
+          topic.photos.push(url); pending--;
+          if (pending === 0) { _saveVlogLocal(); if (typeof _syncVlogToFs === 'function') _syncVlogToFs(); renderVlogSection(); }
+        }).catch(function() {
+          topic.photos.push(dataUrl); pending--;
+          if (pending === 0) { _saveVlogLocal(); renderVlogSection(); }
+        });
+      } else {
+        topic.photos.push(dataUrl); pending--;
+        if (pending === 0) { _saveVlogLocal(); renderVlogSection(); }
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
 function buildPhotoGallery() {
   var container = document.getElementById('photo-gallery-content');
   if (!container) return;
@@ -6128,11 +6444,16 @@ function buildPhotoGallery() {
 
       var nameDiv = document.createElement('div');
       nameDiv.className = 'pg-stop-name';
-      nameDiv.textContent = stopName;
+      nameDiv.innerHTML = stopName + ' <span class="pg-toggle-arrow">▾</span>';
+      nameDiv.onclick = function() { togglePgStop(nameDiv); };
       stopDiv.appendChild(nameDiv);
 
+      var body = document.createElement('div');
+      body.className = 'pg-stop-body';
+      body.style.display = 'none';
       var grid = document.createElement('div');
       grid.className = 'pg-imgs';
+      grid.style.padding = '0.8rem 1rem';
       allImgs.forEach(function(src) {
         var item = document.createElement('div');
         item.className = 'pg-img-item';
@@ -6143,7 +6464,8 @@ function buildPhotoGallery() {
         item.appendChild(img);
         grid.appendChild(item);
       });
-      stopDiv.appendChild(grid);
+      body.appendChild(grid);
+      stopDiv.appendChild(body);
       dayBlock.appendChild(stopDiv);
     });
 
@@ -6928,6 +7250,12 @@ loadUserTips();
   }
   window._syncInspoToFs = _syncInspoToFs;
 
+  function _syncVlogToFs() {
+    _doc.set({ vlogInspo: JSON.stringify(_vlogData) }, { merge: true })
+      .catch(function(e) { console.warn('vlog sync failed:', e); });
+  }
+  window._syncVlogToFs = _syncVlogToFs;
+
   /* ── 覆寫 save functions（本地儲存後同步到 Firestore）── */
   var _oShop = saveShop;
   saveShop = function() { _oShop(); fsSet({ shop: shopItems }); };
@@ -6994,6 +7322,19 @@ loadUserTips();
         }
       } catch(e) {}
     }
+    // VLOG靈感（即時同步）
+    if (d.vlogInspo) {
+      try {
+        var vlogIn = JSON.parse(d.vlogInspo);
+        if (JSON.stringify(vlogIn) !== JSON.stringify(_vlogData)) {
+          _vlogData = vlogIn;
+          localStorage.setItem('busan-vlog-v1', d.vlogInspo);
+          if (document.getElementById('photos') && document.getElementById('photos').classList.contains('active')) {
+            if (typeof renderVlogSection === 'function') renderVlogSection();
+          }
+        }
+      } catch(e) {}
+    }
     // 圖片（即時同步）
     if (d.noteImages) {
       try {
@@ -7028,6 +7369,10 @@ loadUserTips();
     });
     _block = false;
     if (typeof loadNoteStates === 'function') loadNoteStates();
+    // VLOG初始載入
+    if (d.vlogInspo) {
+      try { _vlogData = JSON.parse(d.vlogInspo); localStorage.setItem('busan-vlog-v1', d.vlogInspo); } catch(e) {}
+    }
     // 靈感資料初始載入
     if (d.photoInspo) {
       try {
