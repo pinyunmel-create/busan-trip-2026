@@ -1458,15 +1458,28 @@
     .container { position: relative; z-index: 1; }
 
     /* ── 拍照合集 ── */
+    /* 拍攝靈感模塊卡片 */
+    .photos-module-card {
+      background: #fff;
+      border-radius: 18px;
+      border: 1.5px solid rgba(0,0,0,0.07);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1.2rem;
+      overflow: hidden;
+    }
     .pg-module-header {
-      display: flex; align-items: center; gap: 0.5rem;
-      font-size: 1rem; font-weight: 900; color: var(--primary);
-      margin-bottom: 1rem; margin-top: 0.2rem;
+      display: flex; align-items: center; gap: 0.55rem;
+      font-size: 0.95rem; font-weight: 900; color: #fff;
+      padding: 0.85rem 1.1rem;
+      background: #3a3a40;
     }
     .pg-module-header .pg-mod-dot {
-      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+      width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
     }
-    .pg-divider { height: 1px; background: var(--border); margin: 1.8rem 0 1.4rem; }
+    .photos-module-body {
+      padding: 0.9rem 1rem 1rem;
+    }
+    .pg-divider { display: none; }
     .pg-empty { text-align: center; padding: 2rem 1.5rem; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8; }
     .pg-empty span { font-size: 0.8rem; opacity: 0.7; }
     .pg-count { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
@@ -1482,9 +1495,9 @@
       overflow: hidden; margin-bottom: 0.7rem; background: #fff;
     }
     .pg-stop-name {
-      font-size: 0.88rem; font-weight: 800; color: #fff;
-      padding: 0.68rem 1rem;
-      background: #3a3a40;
+      font-size: 0.88rem; font-weight: 700; color: #666;
+      padding: 0.65rem 1rem;
+      background: #f8f8f8;
     }
     .pg-stop .pg-imgs { padding: 0.8rem 1rem; }
     /* Shared image strip */
@@ -1521,21 +1534,20 @@
     .inspo-body-add-btn {
       display: flex; align-items: center; justify-content: center; gap: 0.4rem;
       margin: 0.6rem auto 0.2rem; padding: 0.45rem 1.1rem;
-      background: #3a3a40; border: none; border-radius: 100px;
-      color: #fff; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
-      opacity: 0.82;
+      background: #ebebeb; border: none; border-radius: 100px;
+      color: #555; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
     }
-    .inspo-body-add-btn:hover { opacity: 1; }
+    .inspo-body-add-btn:hover { background: #e0e0e0; }
     /* 拍攝靈感 toolbar 按鈕 */
     .photos-toolbar-btn {
-      background: none; border: 1.5px solid #d0cdc8; border-radius: 100px;
-      padding: 0.28rem 0.8rem; font-size: 0.72rem; color: #666; cursor: pointer;
-      font-family: inherit; font-weight: 600; transition: background 0.15s, color 0.15s;
+      background: none; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px;
+      padding: 0.25rem 0.75rem; font-size: 0.7rem; color: rgba(255,255,255,0.85); cursor: pointer;
+      font-family: inherit; font-weight: 600; transition: background 0.15s;
     }
-    .photos-toolbar-btn:hover { background: #f0ede8; color: #333; }
+    .photos-toolbar-btn:hover { background: rgba(255,255,255,0.12); }
     /* 箭頭 */
     .inspo-toggle-arrow {
-      font-size: 1.35rem; color: rgba(255,255,255,0.75); margin-left: 0.4rem;
+      font-size: 1.35rem; color: rgba(0,0,0,0.3); margin-left: 0.4rem;
       display: inline-block; transition: transform 0.32s cubic-bezier(0.4,0,0.2,1);
       line-height: 1;
     }
@@ -1558,10 +1570,10 @@
       padding: 0.7rem 1rem 0.7rem 1.1rem;
       display: flex; align-items: center; justify-content: space-between;
       border-bottom: none;
-      background: #3a3a40;
+      background: #f8f8f8;
     }
     .inspo-spot-header-left { display: flex; flex-direction: column; gap: 0.1rem; flex: 1; }
-    .inspo-spot-name { font-size: 0.88rem; font-weight: 800; color: #fff; }
+    .inspo-spot-name { font-size: 0.88rem; font-weight: 700; color: #666; }
     .inspo-spot-actions { display: flex; gap: 0.4rem; align-items: center; }
     .inspo-add-photo-btn {
       display: inline-flex; align-items: center; gap: 0.3rem;
@@ -4828,50 +4840,69 @@
 <div id="photos" class="section">
 
   <!-- Module 1: 行程筆記 -->
-  <div class="pg-module-header">
-    <div class="pg-mod-dot" style="background:#7B6BBE;"></div>行程筆記
-    <div style="margin-left:auto;display:flex;gap:0.4rem;">
-      <button class="photos-toolbar-btn" onclick="expandAllInspoVlog()">全展開</button>
-      <button class="photos-toolbar-btn" onclick="collapseAllInspoVlog()">全收起</button>
+  <div class="photos-module-card">
+    <div class="pg-module-header">
+      行程筆記
+      <div style="margin-left:auto;display:flex;gap:0.4rem;">
+        <button class="photos-toolbar-btn" onclick="expandPhotoGallery()">展開</button>
+        <button class="photos-toolbar-btn" onclick="collapsePhotoGallery()">收起</button>
+      </div>
     </div>
-  </div>
-  <div id="photo-gallery-content">
-    <div class="pg-empty">📷 還沒有照片<br><span>去行程細節各景點點相機圖示上傳照片吧！</span></div>
+    <div class="photos-module-body">
+      <div id="photo-gallery-content">
+        <div class="pg-empty">📷 還沒有照片<br><span>去行程細節各景點點相機圖示上傳照片吧！</span></div>
+      </div>
+    </div>
   </div>
 
   <div class="pg-divider"></div>
 
   <!-- Module 2: 更多拍照靈感 -->
-  <div class="pg-module-header">
-    <div class="pg-mod-dot" style="background:#e1af54;"></div>更多拍照靈感
-  </div>
-  <div id="inspo-content"></div>
-  <div class="inspo-add-spot-wrap">
-    <button class="inspo-add-spot-btn" onclick="openInspoAddForm()">＋ 新增景點靈感</button>
-    <div class="inspo-add-form" id="inspo-add-form">
-      <input type="text" id="inspo-spot-input" placeholder="景點名稱（例：廣안里海灘）" onkeydown="if(event.key==='Enter')confirmAddInspoSpot()">
-      <div class="inspo-form-btns">
-        <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">新增</button>
-        <button class="inspo-cancel-btn" onclick="closeInspoAddForm()">取消</button>
+  <div class="photos-module-card">
+    <div class="pg-module-header">
+      更多拍照靈感
+      <div style="margin-left:auto;display:flex;gap:0.4rem;">
+        <button class="photos-toolbar-btn" onclick="expandInspo()">展開</button>
+        <button class="photos-toolbar-btn" onclick="collapseInspo()">收起</button>
+      </div>
+    </div>
+    <div class="photos-module-body">
+      <div id="inspo-content"></div>
+      <div class="inspo-add-spot-wrap">
+        <button class="inspo-add-spot-btn" onclick="openInspoAddForm()">＋ 新增景點靈感</button>
+        <div class="inspo-add-form" id="inspo-add-form">
+          <input type="text" id="inspo-spot-input" placeholder="景點名稱（例：廣안里海灘）" onkeydown="if(event.key==='Enter')confirmAddInspoSpot()">
+          <div class="inspo-form-btns">
+            <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">新增</button>
+            <button class="inspo-cancel-btn" onclick="closeInspoAddForm()">取消</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-
   <div class="pg-divider"></div>
 
-  <!-- Module 3: 三人VLOG腳本靈感 -->
-  <div class="pg-module-header">
-    <div class="pg-mod-dot" style="background:#9a599a;"></div>三人VLOG腳本靈感
-  </div>
-  <div id="vlog-content"></div>
-  <div class="inspo-add-spot-wrap">
-    <button class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
-    <div class="inspo-add-form" id="vlog-add-form">
-      <input type="text" id="vlog-topic-input" placeholder="主題名稱（例：海邊開場鏡頭）" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
-      <div class="inspo-form-btns">
-        <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">新增</button>
-        <button class="inspo-cancel-btn" onclick="closeVlogAddForm()">取消</button>
+  <!-- Module 3: VLOG靈感 -->
+  <div class="photos-module-card">
+    <div class="pg-module-header">
+      VLOG靈感
+      <div style="margin-left:auto;display:flex;gap:0.4rem;">
+        <button class="photos-toolbar-btn" onclick="expandVlog()">展開</button>
+        <button class="photos-toolbar-btn" onclick="collapseVlog()">收起</button>
+      </div>
+    </div>
+    <div class="photos-module-body">
+      <div id="vlog-content"></div>
+      <div class="inspo-add-spot-wrap">
+        <button class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
+        <div class="inspo-add-form" id="vlog-add-form">
+          <input type="text" id="vlog-topic-input" placeholder="主題名稱（例：海邊開場鏡頭）" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
+          <div class="inspo-form-btns">
+            <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">新增</button>
+            <button class="inspo-cancel-btn" onclick="closeVlogAddForm()">取消</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -6015,28 +6046,38 @@ function togglePgStop(el) {
 }
 var _inspoOpenIds = new Set();
 var _vlogOpenIds = new Set();
-function expandAllInspoVlog() {
-  // Module 1: 行程筆記（直接操作 DOM）
+// Module 1 展開收起
+function expandPhotoGallery() {
   document.querySelectorAll('#photo-gallery-content .pg-stop-body').forEach(function(body) {
     body.style.display = 'block';
     var arrow = body.previousElementSibling && body.previousElementSibling.querySelector('.pg-toggle-arrow');
     if (arrow) arrow.classList.add('open');
   });
-  // Module 2 & 3
-  _inspoData.forEach(function(s) { _inspoOpenIds.add(s.id); });
-  _vlogData.forEach(function(t) { _vlogOpenIds.add(t.id); });
-  renderInspoSection(); renderVlogSection();
 }
-function collapseAllInspoVlog() {
-  // Module 1: 行程筆記
+function collapsePhotoGallery() {
   document.querySelectorAll('#photo-gallery-content .pg-stop-body').forEach(function(body) {
     body.style.display = 'none';
     var arrow = body.previousElementSibling && body.previousElementSibling.querySelector('.pg-toggle-arrow');
     if (arrow) arrow.classList.remove('open');
   });
-  // Module 2 & 3
-  _inspoOpenIds = new Set(); _vlogOpenIds = new Set();
-  renderInspoSection(); renderVlogSection();
+}
+// Module 2 展開收起
+function expandInspo() {
+  _inspoData.forEach(function(s) { _inspoOpenIds.add(s.id); });
+  renderInspoSection();
+}
+function collapseInspo() {
+  _inspoData.forEach(function(s) { _inspoOpenIds.delete(s.id); });
+  renderInspoSection();
+}
+// Module 3 展開收起
+function expandVlog() {
+  _vlogData.forEach(function(t) { _vlogOpenIds.add(t.id); });
+  renderVlogSection();
+}
+function collapseVlog() {
+  _vlogData.forEach(function(t) { _vlogOpenIds.delete(t.id); });
+  renderVlogSection();
 }
 function toggleInspoSpot(spotId) {
   var body = document.getElementById('inspo-body-' + spotId);
