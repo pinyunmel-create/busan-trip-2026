@@ -1531,13 +1531,21 @@
     .inspo-swipe-del.visible { opacity: 1; pointer-events: auto; }
     .inspo-spot { margin-bottom: 0; transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); touch-action: pan-y; position: relative; }
     /* 展開後的新增照片按鈕 */
+    .inspo-body-btns { display: flex; gap: 0.5rem; margin: 0.6rem 0 0.2rem; }
     .inspo-body-add-btn {
-      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
-      margin: 0.6rem auto 0.2rem; padding: 0.45rem 1.1rem;
+      display: flex; align-items: center; gap: 0.4rem;
+      padding: 0.42rem 1rem;
       background: #ebebeb; border: none; border-radius: 100px;
       color: #555; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
     }
     .inspo-body-add-btn:hover { background: #e0e0e0; }
+    .inspo-body-del-btn {
+      display: flex; align-items: center; gap: 0.3rem;
+      padding: 0.42rem 1rem;
+      background: #fce8e8; border: none; border-radius: 100px;
+      color: #c0392b; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .inspo-body-del-btn:hover { background: #f5d0d0; }
     /* 拍攝靈感 toolbar 按鈕 */
     .photos-toolbar-btn {
       background: none; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px;
@@ -6201,31 +6209,27 @@ function renderInspoSection() {
       });
       body.appendChild(strip);
     }
-    // 新增照片按鈕放在 body 底部
+    // 按鈕列：新增照片 + 刪除
+    var btnRow = document.createElement('div');
+    btnRow.className = 'inspo-body-btns';
     var addBtn = document.createElement('button');
     addBtn.className = 'inspo-body-add-btn';
-    addBtn.title = '新增照片';
     addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
     var fileInput = document.createElement('input');
     fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
     fileInput.style.display = 'none'; fileInput.id = 'inspo-file-' + spot.id;
     fileInput.onchange = (function(sid) { return function() { handleInspoUpload(sid, this); }; })(spot.id);
     addBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); document.getElementById('inspo-file-' + sid).click(); }; })(spot.id);
-    body.appendChild(addBtn);
-    body.appendChild(fileInput);
+    var delBtn = document.createElement('button');
+    delBtn.className = 'inspo-body-del-btn';
+    delBtn.textContent = '刪除';
+    delBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); deleteInspoSpot(sid); }; })(spot.id);
+    btnRow.appendChild(addBtn);
+    btnRow.appendChild(fileInput);
+    btnRow.appendChild(delBtn);
+    body.appendChild(btnRow);
     card.appendChild(body);
-
-    // 左滑刪除
-    var wrap = document.createElement('div');
-    wrap.className = 'inspo-swipe-wrap';
-    var delZone = document.createElement('div');
-    delZone.className = 'inspo-swipe-del';
-    delZone.textContent = '刪除';
-    delZone.onclick = (function(sid) { return function() { deleteInspoSpot(sid); }; })(spot.id);
-    wrap.appendChild(delZone);
-    wrap.appendChild(card);
-    _attachCardSwipe(card, null);
-    container.appendChild(wrap);
+    container.appendChild(card);
   });
 }
 
@@ -6358,31 +6362,27 @@ function renderVlogSection() {
       });
       body.appendChild(strip);
     }
-    // 新增照片按鈕放在 body 底部
+    // 按鈕列：新增照片 + 刪除
+    var btnRow = document.createElement('div');
+    btnRow.className = 'inspo-body-btns';
     var addBtn = document.createElement('button');
     addBtn.className = 'inspo-body-add-btn';
-    addBtn.title = '新增照片';
     addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
     var fileInput = document.createElement('input');
     fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
     fileInput.style.display = 'none'; fileInput.id = 'vlog-file-' + topic.id;
     fileInput.onchange = (function(tid) { return function() { handleVlogUpload(tid, this); }; })(topic.id);
     addBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); document.getElementById('vlog-file-' + tid).click(); }; })(topic.id);
-    body.appendChild(addBtn);
-    body.appendChild(fileInput);
+    var delBtn = document.createElement('button');
+    delBtn.className = 'inspo-body-del-btn';
+    delBtn.textContent = '刪除';
+    delBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); deleteVlogTopic(tid); }; })(topic.id);
+    btnRow.appendChild(addBtn);
+    btnRow.appendChild(fileInput);
+    btnRow.appendChild(delBtn);
+    body.appendChild(btnRow);
     card.appendChild(body);
-
-    // 左滑刪除
-    var wrap = document.createElement('div');
-    wrap.className = 'inspo-swipe-wrap';
-    var delZone = document.createElement('div');
-    delZone.className = 'inspo-swipe-del';
-    delZone.textContent = '刪除';
-    delZone.onclick = (function(tid) { return function() { deleteVlogTopic(tid); }; })(topic.id);
-    wrap.appendChild(delZone);
-    wrap.appendChild(card);
-    _attachCardSwipe(card, null);
-    container.appendChild(wrap);
+    container.appendChild(card);
   });
 }
 
