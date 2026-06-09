@@ -1542,10 +1542,10 @@
     .inspo-body-del-btn {
       display: flex; align-items: center; gap: 0.3rem;
       padding: 0.42rem 1rem;
-      background: #fce8e8; border: none; border-radius: 100px;
-      color: #c0392b; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      background: #ebebeb; border: none; border-radius: 100px;
+      color: #555; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
     }
-    .inspo-body-del-btn:hover { background: #f5d0d0; }
+    .inspo-body-del-btn:hover { background: #e0e0e0; }
     /* 拍攝靈感 toolbar 按鈕 */
     .photos-toolbar-btn {
       background: none; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px;
@@ -1619,7 +1619,7 @@
       padding: 0.55rem 0.8rem; font-size: 0.9rem; font-family: inherit;
       margin-bottom: 0.7rem; outline: none;
     }
-    .inspo-add-form input:focus { border-color: #7B6BBE; }
+    .inspo-add-form input:focus { border-color: #ccc; }
     .inspo-form-btns { display: flex; gap: 0.5rem; }
     .inspo-confirm-btn {
       flex: 1; padding: 0.55rem; border: none; border-radius: 10px;
@@ -4879,7 +4879,7 @@
       <div class="inspo-add-spot-wrap">
         <button class="inspo-add-spot-btn" onclick="openInspoAddForm()">＋ 新增景點靈感</button>
         <div class="inspo-add-form" id="inspo-add-form">
-          <input type="text" id="inspo-spot-input" placeholder="景點名稱（例：廣안里海灘）" onkeydown="if(event.key==='Enter')confirmAddInspoSpot()">
+          <input type="text" id="inspo-spot-input" placeholder="請輸入拍攝主題" onkeydown="if(event.key==='Enter')confirmAddInspoSpot()">
           <div class="inspo-form-btns">
             <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">新增</button>
             <button class="inspo-cancel-btn" onclick="closeInspoAddForm()">取消</button>
@@ -4905,7 +4905,7 @@
       <div class="inspo-add-spot-wrap">
         <button class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
         <div class="inspo-add-form" id="vlog-add-form">
-          <input type="text" id="vlog-topic-input" placeholder="主題名稱（例：海邊開場鏡頭）" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
+          <input type="text" id="vlog-topic-input" placeholder="請輸入拍攝主題" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
           <div class="inspo-form-btns">
             <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">新增</button>
             <button class="inspo-cancel-btn" onclick="closeVlogAddForm()">取消</button>
@@ -6257,11 +6257,28 @@ function confirmAddInspoSpot() {
   closeInspoAddForm();
   renderInspoSection();
 }
+function _confirmDelete(onOk) {
+  var overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  var box = document.createElement('div');
+  box.style.cssText = 'background:#fff;border-radius:18px;padding:1.6rem 1.4rem 1.2rem;width:82%;max-width:300px;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.18);';
+  box.innerHTML = '<div style="font-size:1rem;font-weight:800;color:#222;margin-bottom:0.4rem;">確定要刪除？</div><div style="font-size:0.82rem;color:#888;margin-bottom:1.2rem;">此區塊的所有內容將一併移除</div><div style="display:flex;gap:0.6rem;">' +
+    '<button id="_del_cancel" style="flex:1;padding:0.6rem;border:1.5px solid #ddd;border-radius:100px;background:#fff;font-size:0.85rem;font-weight:700;color:#555;cursor:pointer;font-family:inherit;">按錯了</button>' +
+    '<button id="_del_ok" style="flex:1;padding:0.6rem;border:none;border-radius:100px;background:#3a3a40;font-size:0.85rem;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;">OK</button>' +
+    '</div>';
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+  overlay.querySelector('#_del_cancel').onclick = function() { document.body.removeChild(overlay); };
+  overlay.querySelector('#_del_ok').onclick = function() { document.body.removeChild(overlay); onOk(); };
+  overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+}
 function deleteInspoSpot(spotId) {
-  _inspoData = _inspoData.filter(function(s) { return s.id !== spotId; });
-  _saveInspoLocal();
-  if (typeof _syncInspoToFs === 'function') _syncInspoToFs();
-  renderInspoSection();
+  _confirmDelete(function() {
+    _inspoData = _inspoData.filter(function(s) { return s.id !== spotId; });
+    _saveInspoLocal();
+    if (typeof _syncInspoToFs === 'function') _syncInspoToFs();
+    renderInspoSection();
+  });
 }
 function handleInspoUpload(spotId, input) {
   var spot = _inspoData.find(function(s) { return s.id === spotId; });
@@ -6410,10 +6427,12 @@ function confirmAddVlogTopic() {
   renderVlogSection();
 }
 function deleteVlogTopic(topicId) {
-  _vlogData = _vlogData.filter(function(t) { return t.id !== topicId; });
-  _saveVlogLocal();
-  if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
-  renderVlogSection();
+  _confirmDelete(function() {
+    _vlogData = _vlogData.filter(function(t) { return t.id !== topicId; });
+    _saveVlogLocal();
+    if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
+    renderVlogSection();
+  });
 }
 function handleVlogUpload(topicId, input) {
   var topic = _vlogData.find(function(t) { return t.id === topicId; });
