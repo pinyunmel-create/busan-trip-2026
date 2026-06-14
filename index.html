@@ -292,9 +292,9 @@
     .ov-card.open .ov-card-body {
       padding: 0.2rem 1.4rem 1.4rem;
     }
-    .ov-card.blue  { background: #ac9469; }
-    .ov-card.green { background: #d29894; }
-    .ov-card.terra { background: #C4644A; }
+    .ov-card.blue  { background: #d29894; }
+    .ov-card.green { background: #C4644A; }
+    .ov-card.terra { background: #B0A8D4; }
     .ov-card.plum  { background: #7B6BBE; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     @media (max-width: 620px) {
@@ -1341,8 +1341,8 @@
     .flight-card-top { background: #fff; border-bottom: 1px solid rgba(0,0,0,0.06); }
     .ov-card-body .flight-person { color: #3a3a40; }
     /* 氣泡底色同卡片色 */
-    .ov-card.blue  .flight-airline-badge { background: #ac9469; color: #fff; }
-    .ov-card.green .flight-airline-badge { background: #d29894; color: #fff; }
+    .ov-card.blue  .flight-airline-badge { background: #d29894; color: #fff; }
+    .ov-card.green .flight-airline-badge { background: #C4644A; color: #fff; }
     .flight-body { background: transparent; }
     .airport-time { color: #fff; }
     .airport-code { color: rgba(255,255,255,0.9); }
@@ -1506,10 +1506,16 @@
       overflow-x: auto; -webkit-overflow-scrolling: touch;
       padding-bottom: 0.35rem; scroll-snap-type: x mandatory;
     }
+    .pg-imgs.two-row {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(2, 88px);
+      grid-auto-columns: 88px;
+    }
     .pg-imgs::-webkit-scrollbar { height: 3px; }
     .pg-imgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     .pg-img-item {
-      flex-shrink: 0; width: 93px; height: 93px;
+      flex-shrink: 0; width: 88px; height: 88px;
       border-radius: 9px; overflow: hidden; cursor: zoom-in;
       background: #f0f0f0; scroll-snap-align: start;
     }
@@ -1546,6 +1552,47 @@
       color: #555; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
     }
     .inspo-body-del-btn:hover { background: #e0e0e0; }
+    /* VLOG 腳本輸入 */
+    .vlog-script-area {
+      width: 100%; min-height: 72px;
+      border: 1.5px solid #e8e5e0; border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.82rem; color: #444; line-height: 1.65;
+      font-family: inherit; resize: none;
+      background: #fafafa; margin-bottom: 0.65rem;
+      box-sizing: border-box; display: block;
+    }
+    .vlog-script-area:focus { outline: none; border-color: #ccc; background: #fff; }
+    .vlog-script-area::placeholder { color: #c0bdb9; }
+    /* Edit mode: active edit button */
+    .inspo-body-edit-active {
+      background: #3a3a40 !important; color: #fff !important;
+    }
+    /* Edit mode: dashed add tile in photo strip */
+    .pg-img-add-tile {
+      flex-shrink: 0; width: 88px; height: 88px;
+      border-radius: 9px; border: 2px dashed #ccc;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-direction: column; gap: 0.1rem;
+      background: #fafafa; scroll-snap-align: start;
+    }
+    /* Edit mode: wrapper for each photo (for X button positioning) */
+    .pg-img-item-wrap {
+      flex-shrink: 0; position: relative; scroll-snap-align: start;
+      width: 88px; height: 88px;
+    }
+    .pg-img-item-wrap .pg-img-item {
+      flex-shrink: unset; scroll-snap-align: unset; width: 100%; height: 100%;
+    }
+    /* Edit mode: X delete button on photo */
+    .pg-img-del-x {
+      position: absolute; top: 4px; right: 4px; z-index: 10;
+      width: 21px; height: 21px; border-radius: 50%;
+      background: rgba(0,0,0,0.62); color: #fff;
+      font-size: 13px; line-height: 1; text-align: center;
+      cursor: pointer; border: none; font-family: inherit; font-weight: 900;
+      padding: 0; display: flex; align-items: center; justify-content: center;
+    }
     /* 拍攝靈感 toolbar 按鈕 */
     .photos-toolbar-btn {
       background: none; border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px;
@@ -1620,6 +1667,7 @@
       margin-bottom: 0.7rem; outline: none;
     }
     .inspo-add-form input:focus { border-color: #ccc; }
+    .inspo-add-form .pg-imgs { margin-bottom: 0.7rem; }
     .inspo-form-btns { display: flex; gap: 0.5rem; }
     .inspo-confirm-btn {
       flex: 1; padding: 0.55rem; border: none; border-radius: 10px;
@@ -1711,8 +1759,7 @@
   <div class="nav-tabs">
     <div class="nav-tab active" onclick="showSection('overview',this)">行程總覽</div>
     <div class="nav-tab" onclick="showSection('itinerary',this)">行程細節</div>
-    <div class="nav-tab" onclick="showSection('expenses',this)">花費記帳</div>
-    <div class="nav-tab" onclick="showSection('photos',this);buildPhotoGallery();_inspoOpenIds=new Set();_vlogOpenIds=new Set();renderInspoSection();renderVlogSection()">拍攝靈感</div>
+    <div class="nav-tab" onclick="showSection('photos',this);buildPhotoGallery();_inspoOpenIds=new Set();_vlogOpenIds=new Set();_inspoEditIds=new Set();_vlogEditIds=new Set();renderInspoSection();renderVlogSection()">拍攝靈感</div>
     <div class="nav-tab" onclick="showSection('shopping',this)">必買清單</div>
     <div class="nav-tab" onclick="showSection('tips',this)">景點攻略</div>
     <div class="nav-tab" onclick="showSection('misc',this)">打包＆其他</div>
@@ -1751,6 +1798,27 @@
       <line x1="10" y1="14" x2="21" y2="3"/>
     </svg>
   </a>
+
+  <!-- 花費分帳 -->
+  <div onclick="openModal('expenses')" style="
+    display:flex;align-items:center;justify-content:space-between;
+    background:#ac9469;border-radius:16px;
+    padding:1.05rem 1.3rem 1.05rem 1.4rem;
+    margin-bottom:0.55rem;
+    cursor:pointer;
+    box-shadow:0 2px 12px rgba(0,0,0,0.10);
+    -webkit-tap-highlight-color:transparent;
+    transition:opacity 0.15s;
+  " onmousedown="this.style.opacity='0.82'" onmouseup="this.style.opacity='1'" onmouseleave="this.style.opacity='1'">
+    <div style="display:flex;flex-direction:column;gap:0.12rem;text-align:left;">
+      <div style="font-size:0.58rem;font-weight:800;letter-spacing:0.13em;text-transform:uppercase;color:rgba(255,255,255,0.6);">常用功能 FUNCTION</div>
+      <div style="font-size:1.08rem;font-weight:900;letter-spacing:-0.01em;color:#fff;line-height:1.25;">花費分帳</div>
+    </div>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+      <line x1="12" y1="1" x2="12" y2="23"/>
+      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+  </div>
 
   <!-- 去程 -->
   <div class="ov-card blue" id="ovc-outbound">
@@ -4722,124 +4790,19 @@
 </div><!-- /tips -->
 
 
-<!-- ════════════ 花費記帳 ════════════ -->
-<div id="expenses" class="section">
-  <!-- 分帳結算（置頂）-->
-  <div class="settlement-card" style="margin-bottom:1.5rem;">
-    <div class="settlement-title">⚖️ 自動結算 — 三人平攤</div>
-    <div class="settlement-body">
-    <div class="settlement-totals">
-      <div class="sett-person"><div class="sett-name">JASMINE</div><div class="sett-amt" id="sa-jasmine">₩0</div><div class="sett-sub" id="sb-jasmine">—</div></div>
-      <div class="sett-person"><div class="sett-name">CONNIE</div><div class="sett-amt" id="sa-connie">₩0</div><div class="sett-sub" id="sb-connie">—</div></div>
-      <div class="sett-person"><div class="sett-name">MEL</div><div class="sett-amt" id="sa-mel">₩0</div><div class="sett-sub" id="sb-mel">—</div></div>
-    </div>
-    <div class="settlement-avg" id="sett-avg">總花費：₩0 ｜每人應付：₩0</div>
-    <div class="settlement-rows" id="sett-rows">
-      <div class="sett-none"></div>
-    </div>
-    </div><!-- /settlement-body -->
-  </div>
-
-  <!-- 個人記帳區（可折疊）-->
-  <div class="expense-grid">
-    <!-- Jasmine -->
-    <div class="expense-block" id="eb-jasmine">
-      <div class="expense-block-header" onclick="toggleExpBlock('jasmine')">
-        <span class="expense-block-hname">Jasmine</span>
-        <div class="expense-block-hright">
-          <span class="expense-total-amt" id="total-jasmine">₩0</span>
-          <span class="exp-block-toggle open" id="toggle-jasmine">▼</span>
-        </div>
-      </div>
-      <div class="expense-block-body" id="body-jasmine">
-        <div class="exp-form" id="form-jasmine">
-          <input type="text" id="desc-jasmine" placeholder="花費項目（例：午餐）">
-          <input type="number" id="amt-jasmine" placeholder="金額（₩）" min="0">
-          <div class="exp-form-btns">
-            <button class="btn-save" onclick="saveExp('jasmine')">儲存</button>
-            <button class="btn-cancel" onclick="closeForm('jasmine')">取消</button>
-          </div>
-        </div>
-        <div class="expense-list" id="list-jasmine"><div class="expense-empty">還沒有記錄</div></div>
-        <div class="expense-footer">
-          <button class="fab" onclick="toggleForm('jasmine')">+</button>
-        </div>
-      </div>
-    </div>
-    <!-- Connie -->
-    <div class="expense-block" id="eb-connie">
-      <div class="expense-block-header" onclick="toggleExpBlock('connie')">
-        <span class="expense-block-hname">Connie</span>
-        <div class="expense-block-hright">
-          <span class="expense-total-amt" id="total-connie">₩0</span>
-          <span class="exp-block-toggle open" id="toggle-connie">▼</span>
-        </div>
-      </div>
-      <div class="expense-block-body" id="body-connie">
-        <div class="exp-form" id="form-connie">
-          <input type="text" id="desc-connie" placeholder="花費項目（例：午餐）">
-          <input type="number" id="amt-connie" placeholder="金額（₩）" min="0">
-          <div class="exp-form-btns">
-            <button class="btn-save" onclick="saveExp('connie')">儲存</button>
-            <button class="btn-cancel" onclick="closeForm('connie')">取消</button>
-          </div>
-        </div>
-        <div class="expense-list" id="list-connie"><div class="expense-empty">還沒有記錄</div></div>
-        <div class="expense-footer">
-          <button class="fab" onclick="toggleForm('connie')">+</button>
-        </div>
-      </div>
-    </div>
-    <!-- Mel -->
-    <div class="expense-block" id="eb-mel">
-      <div class="expense-block-header" onclick="toggleExpBlock('mel')">
-        <span class="expense-block-hname">Mel</span>
-        <div class="expense-block-hright">
-          <span class="expense-total-amt" id="total-mel">₩0</span>
-          <span class="exp-block-toggle open" id="toggle-mel">▼</span>
-        </div>
-      </div>
-      <div class="expense-block-body" id="body-mel">
-        <div class="exp-form" id="form-mel">
-          <input type="text" id="desc-mel" placeholder="花費項目（例：午餐）">
-          <input type="number" id="amt-mel" placeholder="金額（₩）" min="0">
-          <div class="exp-form-btns">
-            <button class="btn-save" onclick="saveExp('mel')">儲存</button>
-            <button class="btn-cancel" onclick="closeForm('mel')">取消</button>
-          </div>
-        </div>
-        <div class="expense-list" id="list-mel"><div class="expense-empty">還沒有記錄</div></div>
-        <div class="expense-footer">
-          <button class="fab" onclick="toggleForm('mel')">+</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /expenses -->
 
 
-<!-- ════════════ 必買清單（獨立頁）════════════ -->
+<!-- ════════════ 必買清單 ════════════ -->
 <div id="shopping" class="section">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;">
-    <span id="shop-progress" class="checklist-progress" style="font-size:0.82rem;color:var(--text-muted);"></span>
-  </div>
-  <div class="shop-list-header">
-    <span class="slh-check"></span>
-    <span class="slh-name">商品名稱</span>
-    <span class="slh-who">提議人</span>
-    <span class="slh-img">參考圖片</span>
-  </div>
-  <div class="shop-list-wrap" id="shop-list"></div>
-  <button class="shop-add-trigger" id="shop-add-trigger-btn" onclick="document.getElementById('shop-add-row').classList.add('open');this.style.display='none'">＋ 新增品項</button>
-  <div class="shop-add-row" id="shop-add-row">
-    <div class="shop-add-row-fields" style="grid-template-columns:1fr 5.5rem;">
-      <input type="text" class="shop-add-inp" id="shop-new-name" placeholder="品項名稱…" onkeydown="if(event.key==='Enter')addShopItem()">
-      <input type="text" class="shop-add-inp" id="shop-new-who" placeholder="名字（選填）" onkeydown="if(event.key==='Enter')addShopItem()">
-    </div>
-    <div class="shop-add-row-actions">
-      <button class="shop-add-cancel-btn" onclick="document.getElementById('shop-add-row').classList.remove('open');document.getElementById('shop-add-trigger-btn').style.display=''">取消</button>
-      <button class="shop-add-btn" style="width:auto;padding:0.38rem 1.2rem;" onclick="addShopItem()">新增</button>
+  <div id="shop-content"></div>
+  <div class="inspo-add-spot-wrap" style="padding:0.5rem 0 0;">
+    <button id="shop-add-spot-btn" class="inspo-add-spot-btn" onclick="openShopAddForm()">＋ 生成新模塊</button>
+    <div class="inspo-add-form" id="shop-add-form">
+      <input type="text" id="shop-cat-input" placeholder="模塊名稱（如：OLIVIA YANG、零食）">
+      <div class="inspo-form-btns">
+        <button class="inspo-cancel-btn" onclick="closeShopAddForm()">取消</button>
+        <button class="inspo-confirm-btn" onclick="confirmAddShopCat()">完成</button>
+      </div>
     </div>
   </div>
 </div>
@@ -4877,12 +4840,19 @@
     <div class="photos-module-body">
       <div id="inspo-content"></div>
       <div class="inspo-add-spot-wrap">
-        <button class="inspo-add-spot-btn" onclick="openInspoAddForm()">＋ 新增景點靈感</button>
+        <button id="inspo-add-spot-btn" class="inspo-add-spot-btn" onclick="openInspoAddForm()">＋ 新增景點靈感</button>
         <div class="inspo-add-form" id="inspo-add-form">
-          <input type="text" id="inspo-spot-input" placeholder="請輸入拍攝主題" onkeydown="if(event.key==='Enter')confirmAddInspoSpot()">
+          <input type="text" id="inspo-spot-input" placeholder="請輸入拍攝主題">
+          <div class="pg-imgs" id="inspo-new-strip">
+            <div class="pg-img-add-tile" onclick="document.getElementById('inspo-new-file').click()">
+              <span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span>
+              <span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>
+            </div>
+          </div>
+          <input type="file" id="inspo-new-file" accept="image/*" multiple style="display:none" onchange="handleInspoNewUpload(this)">
           <div class="inspo-form-btns">
-            <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">新增</button>
             <button class="inspo-cancel-btn" onclick="closeInspoAddForm()">取消</button>
+            <button class="inspo-confirm-btn" onclick="confirmAddInspoSpot()">完成</button>
           </div>
         </div>
       </div>
@@ -4903,12 +4873,20 @@
     <div class="photos-module-body">
       <div id="vlog-content"></div>
       <div class="inspo-add-spot-wrap">
-        <button class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
+        <button id="vlog-add-spot-btn" class="inspo-add-spot-btn" onclick="openVlogAddForm()">＋ 新增主題</button>
         <div class="inspo-add-form" id="vlog-add-form">
-          <input type="text" id="vlog-topic-input" placeholder="請輸入拍攝主題" onkeydown="if(event.key==='Enter')confirmAddVlogTopic()">
+          <input type="text" id="vlog-topic-input" placeholder="請輸入拍攝主題">
+          <textarea class="vlog-script-area" id="vlog-new-script" placeholder="寫下分鏡構想、腳本靈感…（選填）"></textarea>
+          <div class="pg-imgs" id="vlog-new-strip">
+            <div class="pg-img-add-tile" onclick="document.getElementById('vlog-new-file').click()">
+              <span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span>
+              <span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>
+            </div>
+          </div>
+          <input type="file" id="vlog-new-file" accept="image/*" multiple style="display:none" onchange="handleVlogNewUpload(this)">
           <div class="inspo-form-btns">
-            <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">新增</button>
             <button class="inspo-cancel-btn" onclick="closeVlogAddForm()">取消</button>
+            <button class="inspo-confirm-btn" onclick="confirmAddVlogTopic()">完成</button>
           </div>
         </div>
       </div>
@@ -5228,6 +5206,96 @@ We hope your stay at 🌿 Grey House brings you wonderful and unforgettable memo
   </div>
 </div>
 
+
+<!-- 花費分帳 modal -->
+<div class="modal-overlay" id="modal-expenses" onclick="closeModalOutside(event,'modal-expenses')">
+  <div class="modal-box">
+    <div class="modal-handle-wrap" onclick="closeModal('expenses')"><div class="modal-handle"></div></div>
+    <div class="modal-header">💰 花費分帳<button class="modal-close" onclick="closeModal('expenses')">✕</button></div>
+
+    <!-- 分帳結算 -->
+    <div class="settlement-card" style="margin-bottom:1.2rem;">
+      <div class="settlement-title">⚖️ 自動結算 — 三人平攤</div>
+      <div class="settlement-body">
+        <div class="settlement-totals">
+          <div class="sett-person"><div class="sett-name">JASMINE</div><div class="sett-amt" id="sa-jasmine">₩0</div><div class="sett-sub" id="sb-jasmine">—</div></div>
+          <div class="sett-person"><div class="sett-name">CONNIE</div><div class="sett-amt" id="sa-connie">₩0</div><div class="sett-sub" id="sb-connie">—</div></div>
+          <div class="sett-person"><div class="sett-name">MEL</div><div class="sett-amt" id="sa-mel">₩0</div><div class="sett-sub" id="sb-mel">—</div></div>
+        </div>
+        <div class="settlement-avg" id="sett-avg">總花費：₩0 ｜每人應付：₩0</div>
+        <div class="settlement-rows" id="sett-rows"><div class="sett-none"></div></div>
+      </div>
+    </div>
+
+    <!-- 個人記帳 -->
+    <div class="expense-grid">
+      <div class="expense-block" id="eb-jasmine">
+        <div class="expense-block-header" onclick="toggleExpBlock('jasmine')">
+          <span class="expense-block-hname">Jasmine</span>
+          <div class="expense-block-hright">
+            <span class="expense-total-amt" id="total-jasmine">₩0</span>
+            <span class="exp-block-toggle open" id="toggle-jasmine">▼</span>
+          </div>
+        </div>
+        <div class="expense-block-body" id="body-jasmine">
+          <div class="exp-form" id="form-jasmine">
+            <input type="text" id="desc-jasmine" placeholder="花費項目（例：午餐）">
+            <input type="number" id="amt-jasmine" placeholder="金額（₩）" min="0">
+            <div class="exp-form-btns">
+              <button class="btn-save" onclick="saveExp('jasmine')">儲存</button>
+              <button class="btn-cancel" onclick="closeForm('jasmine')">取消</button>
+            </div>
+          </div>
+          <div class="expense-list" id="list-jasmine"><div class="expense-empty">還沒有記錄</div></div>
+          <div class="expense-footer"><button class="fab" onclick="toggleForm('jasmine')">+</button></div>
+        </div>
+      </div>
+      <div class="expense-block" id="eb-connie">
+        <div class="expense-block-header" onclick="toggleExpBlock('connie')">
+          <span class="expense-block-hname">Connie</span>
+          <div class="expense-block-hright">
+            <span class="expense-total-amt" id="total-connie">₩0</span>
+            <span class="exp-block-toggle open" id="toggle-connie">▼</span>
+          </div>
+        </div>
+        <div class="expense-block-body" id="body-connie">
+          <div class="exp-form" id="form-connie">
+            <input type="text" id="desc-connie" placeholder="花費項目（例：午餐）">
+            <input type="number" id="amt-connie" placeholder="金額（₩）" min="0">
+            <div class="exp-form-btns">
+              <button class="btn-save" onclick="saveExp('connie')">儲存</button>
+              <button class="btn-cancel" onclick="closeForm('connie')">取消</button>
+            </div>
+          </div>
+          <div class="expense-list" id="list-connie"><div class="expense-empty">還沒有記錄</div></div>
+          <div class="expense-footer"><button class="fab" onclick="toggleForm('connie')">+</button></div>
+        </div>
+      </div>
+      <div class="expense-block" id="eb-mel">
+        <div class="expense-block-header" onclick="toggleExpBlock('mel')">
+          <span class="expense-block-hname">Mel</span>
+          <div class="expense-block-hright">
+            <span class="expense-total-amt" id="total-mel">₩0</span>
+            <span class="exp-block-toggle open" id="toggle-mel">▼</span>
+          </div>
+        </div>
+        <div class="expense-block-body" id="body-mel">
+          <div class="exp-form" id="form-mel">
+            <input type="text" id="desc-mel" placeholder="花費項目（例：午餐）">
+            <input type="number" id="amt-mel" placeholder="金額（₩）" min="0">
+            <div class="exp-form-btns">
+              <button class="btn-save" onclick="saveExp('mel')">儲存</button>
+              <button class="btn-cancel" onclick="closeForm('mel')">取消</button>
+            </div>
+          </div>
+          <div class="expense-list" id="list-mel"><div class="expense-empty">還沒有記錄</div></div>
+          <div class="expense-footer"><button class="fab" onclick="toggleForm('mel')">+</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <!-- ══════ SCRIPTS ══════ -->
 <!-- ═══ STOP EDIT BOTTOM SHEET ═══ -->
@@ -6054,6 +6122,8 @@ function togglePgStop(el) {
 }
 var _inspoOpenIds = new Set();
 var _vlogOpenIds = new Set();
+var _inspoEditIds = new Set();
+var _vlogEditIds = new Set();
 // Module 1 展開收起
 function expandPhotoGallery() {
   document.querySelectorAll('#photo-gallery-content .pg-stop-body').forEach(function(body) {
@@ -6193,65 +6263,116 @@ function renderInspoSection() {
     body.className = 'inspo-spot-body';
     body.id = 'inspo-body-' + spot.id;
     var isOpen = _inspoOpenIds.has(spot.id);
+    var isEdit = _inspoEditIds.has(spot.id);
     body.style.display = isOpen ? 'block' : 'none';
     if (isOpen) arrow.classList.add('open');
-    if (spot.photos && spot.photos.length > 0) {
+    if (spot.photos && spot.photos.length > 0 || isEdit) {
       var strip = document.createElement('div');
-      strip.className = 'pg-imgs';
-      spot.photos.forEach(function(src) {
+      strip.className = (spot.photos && spot.photos.length > 6) ? 'pg-imgs two-row' : 'pg-imgs';
+      // Dashed ＋新增 tile (edit mode only, first item)
+      if (isEdit) {
+        var addTile = document.createElement('div');
+        addTile.className = 'pg-img-add-tile';
+        addTile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增</span>';
+        addTile.onclick = (function(sid) { return function(e) { e.stopPropagation(); document.getElementById('inspo-file-' + sid).click(); }; })(spot.id);
+        strip.appendChild(addTile);
+      }
+      spot.photos.forEach(function(src, photoIdx) {
+        var wrap = document.createElement('div');
+        wrap.className = 'pg-img-item-wrap';
         var item = document.createElement('div');
         item.className = 'pg-img-item';
-        item.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
+        if (!isEdit) item.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
         var img = document.createElement('img');
         img.src = src; img.loading = 'lazy';
         item.appendChild(img);
-        strip.appendChild(item);
+        wrap.appendChild(item);
+        if (isEdit) {
+          var xBtn = document.createElement('button');
+          xBtn.className = 'pg-img-del-x';
+          xBtn.textContent = '×';
+          xBtn.onclick = (function(sid, idx) { return function(e) { e.stopPropagation(); deleteInspoPhoto(sid, idx); }; })(spot.id, photoIdx);
+          wrap.appendChild(xBtn);
+        }
+        strip.appendChild(wrap);
       });
       body.appendChild(strip);
     }
-    // 按鈕列：新增照片 + 刪除
+    // 按鈕列：編輯（切換）+ 刪除此主題（只在編輯模式）
     var btnRow = document.createElement('div');
     btnRow.className = 'inspo-body-btns';
-    var addBtn = document.createElement('button');
-    addBtn.className = 'inspo-body-add-btn';
-    addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
+    var editBtn = document.createElement('button');
+    editBtn.className = isEdit ? 'inspo-body-add-btn inspo-body-edit-active' : 'inspo-body-add-btn';
+    editBtn.textContent = isEdit ? '完成' : '編輯';
+    editBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); toggleInspoEdit(sid); }; })(spot.id);
     var fileInput = document.createElement('input');
     fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
     fileInput.style.display = 'none'; fileInput.id = 'inspo-file-' + spot.id;
     fileInput.onchange = (function(sid) { return function() { handleInspoUpload(sid, this); }; })(spot.id);
-    addBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); document.getElementById('inspo-file-' + sid).click(); }; })(spot.id);
-    var delBtn = document.createElement('button');
-    delBtn.className = 'inspo-body-del-btn';
-    delBtn.textContent = '刪除';
-    delBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); deleteInspoSpot(sid); }; })(spot.id);
-    btnRow.appendChild(addBtn);
+    btnRow.appendChild(editBtn);
     btnRow.appendChild(fileInput);
-    btnRow.appendChild(delBtn);
+    if (isEdit) {
+      var delBtn = document.createElement('button');
+      delBtn.className = 'inspo-body-del-btn';
+      delBtn.textContent = '刪除此主題';
+      delBtn.onclick = (function(sid) { return function(e) { e.stopPropagation(); deleteInspoSpot(sid); }; })(spot.id);
+      btnRow.appendChild(delBtn);
+    }
     body.appendChild(btnRow);
     card.appendChild(body);
     container.appendChild(card);
   });
 }
 
+var _inspoNewPhotos = [];
+function _renderInspoNewStrip() {
+  var strip = document.getElementById('inspo-new-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  var tile = document.createElement('div');
+  tile.className = 'pg-img-add-tile';
+  tile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>';
+  tile.onclick = function() { document.getElementById('inspo-new-file').click(); };
+  strip.appendChild(tile);
+  _inspoNewPhotos.forEach(function(src, idx) {
+    var wrap = document.createElement('div'); wrap.className = 'pg-img-item-wrap';
+    var item = document.createElement('div'); item.className = 'pg-img-item';
+    var img = document.createElement('img'); img.src = src; item.appendChild(img); wrap.appendChild(item);
+    var x = document.createElement('button'); x.className = 'pg-img-del-x'; x.textContent = '×';
+    x.onclick = (function(i) { return function(e) { e.stopPropagation(); _inspoNewPhotos.splice(i,1); _renderInspoNewStrip(); }; })(idx);
+    wrap.appendChild(x); strip.appendChild(wrap);
+  });
+}
+function handleInspoNewUpload(input) {
+  if (!input.files || !input.files.length) return;
+  var files = Array.from(input.files).filter(function(f) { return f.type.startsWith('image/'); });
+  var pending = files.length; if (!pending) return;
+  files.forEach(function(file) {
+    var r = new FileReader(); r.onload = function(ev) { _inspoNewPhotos.push(ev.target.result); pending--; if (!pending) _renderInspoNewStrip(); }; r.readAsDataURL(file);
+  });
+  input.value = '';
+}
 function openInspoAddForm() {
   var form = document.getElementById('inspo-add-form');
-  var btn = document.querySelector('.inspo-add-spot-btn');
+  var btn = document.getElementById('inspo-add-spot-btn');
   if (form) { form.classList.add('open'); if (btn) btn.style.display = 'none'; }
   setTimeout(function() { var inp = document.getElementById('inspo-spot-input'); if (inp) inp.focus(); }, 50);
 }
 function closeInspoAddForm() {
   var form = document.getElementById('inspo-add-form');
-  var btn = document.querySelector('.inspo-add-spot-btn');
+  var btn = document.getElementById('inspo-add-spot-btn');
   var inp = document.getElementById('inspo-spot-input');
   if (form) { form.classList.remove('open'); if (btn) btn.style.display = ''; }
   if (inp) inp.value = '';
+  _inspoNewPhotos = []; _renderInspoNewStrip();
 }
 function confirmAddInspoSpot() {
   var inp = document.getElementById('inspo-spot-input');
   var name = inp ? inp.value.trim() : '';
   if (!name) return;
   var nextColor = _inspoColors[_inspoData.length % _inspoColors.length];
-  _inspoData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), location: name, photos: [], color: nextColor });
+  _inspoData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), location: name, photos: _inspoNewPhotos.slice(), color: nextColor });
+  _inspoNewPhotos = [];
   _saveInspoLocal();
   if (typeof _syncInspoToFs === 'function') _syncInspoToFs();
   closeInspoAddForm();
@@ -6275,10 +6396,28 @@ function _confirmDelete(onOk) {
 function deleteInspoSpot(spotId) {
   _confirmDelete(function() {
     _inspoData = _inspoData.filter(function(s) { return s.id !== spotId; });
+    _inspoEditIds.delete(spotId);
     _saveInspoLocal();
     if (typeof _syncInspoToFs === 'function') _syncInspoToFs();
     renderInspoSection();
   });
+}
+function toggleInspoEdit(spotId) {
+  if (_inspoEditIds.has(spotId)) {
+    _inspoEditIds.delete(spotId);
+  } else {
+    _inspoEditIds.add(spotId);
+    _inspoOpenIds.add(spotId); // ensure card is open in edit mode
+  }
+  renderInspoSection();
+}
+function deleteInspoPhoto(spotId, photoIdx) {
+  var spot = _inspoData.find(function(s) { return s.id === spotId; });
+  if (!spot) return;
+  spot.photos.splice(photoIdx, 1);
+  _saveInspoLocal();
+  if (typeof _syncInspoToFs === 'function') _syncInspoToFs();
+  renderInspoSection();
 }
 function handleInspoUpload(spotId, input) {
   var spot = _inspoData.find(function(s) { return s.id === spotId; });
@@ -6364,63 +6503,135 @@ function renderVlogSection() {
     body.className = 'inspo-spot-body';
     body.id = 'vlog-body-' + topic.id;
     var isOpen = _vlogOpenIds.has(topic.id);
+    var isEdit = _vlogEditIds.has(topic.id);
     body.style.display = isOpen ? 'block' : 'none';
     if (isOpen) arrowSpan.classList.add('open');
-    if (topic.photos && topic.photos.length > 0) {
+    // 腳本輸入區（在照片上方）
+    var scriptArea = document.createElement('textarea');
+    scriptArea.className = 'vlog-script-area';
+    scriptArea.placeholder = '寫下分鏡構想、腳本靈感…';
+    scriptArea.value = topic.script || '';
+    var _vlogScriptTimer;
+    scriptArea.addEventListener('input', (function(tid) { return function() {
+      var t = _vlogData.find(function(x) { return x.id === tid; });
+      if (t) t.script = scriptArea.value;
+      clearTimeout(_vlogScriptTimer);
+      _vlogScriptTimer = setTimeout(function() {
+        _saveVlogLocal();
+        if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
+      }, 800);
+    }; })(topic.id));
+    body.appendChild(scriptArea);
+    if (topic.photos && topic.photos.length > 0 || isEdit) {
       var strip = document.createElement('div');
-      strip.className = 'pg-imgs';
-      topic.photos.forEach(function(src) {
+      strip.className = (topic.photos && topic.photos.length > 6) ? 'pg-imgs two-row' : 'pg-imgs';
+      // Dashed ＋新增 tile (edit mode only, first item)
+      if (isEdit) {
+        var addTile = document.createElement('div');
+        addTile.className = 'pg-img-add-tile';
+        addTile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增</span>';
+        addTile.onclick = (function(tid) { return function(e) { e.stopPropagation(); document.getElementById('vlog-file-' + tid).click(); }; })(topic.id);
+        strip.appendChild(addTile);
+      }
+      topic.photos.forEach(function(src, photoIdx) {
+        var wrap = document.createElement('div');
+        wrap.className = 'pg-img-item-wrap';
         var item = document.createElement('div');
         item.className = 'pg-img-item';
-        item.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
+        if (!isEdit) item.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
         var img = document.createElement('img');
         img.src = src; img.loading = 'lazy';
-        item.appendChild(img); strip.appendChild(item);
+        item.appendChild(img);
+        wrap.appendChild(item);
+        if (isEdit) {
+          var xBtn = document.createElement('button');
+          xBtn.className = 'pg-img-del-x';
+          xBtn.textContent = '×';
+          xBtn.onclick = (function(tid, idx) { return function(e) { e.stopPropagation(); deleteVlogPhoto(tid, idx); }; })(topic.id, photoIdx);
+          wrap.appendChild(xBtn);
+        }
+        strip.appendChild(wrap);
       });
       body.appendChild(strip);
     }
-    // 按鈕列：新增照片 + 刪除
+    // 按鈕列：編輯（切換）+ 刪除此主題（只在編輯模式）
     var btnRow = document.createElement('div');
     btnRow.className = 'inspo-body-btns';
-    var addBtn = document.createElement('button');
-    addBtn.className = 'inspo-body-add-btn';
-    addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg> 新增照片';
+    var editBtn = document.createElement('button');
+    editBtn.className = isEdit ? 'inspo-body-add-btn inspo-body-edit-active' : 'inspo-body-add-btn';
+    editBtn.textContent = isEdit ? '完成' : '編輯';
+    editBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); toggleVlogEdit(tid); }; })(topic.id);
     var fileInput = document.createElement('input');
     fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.multiple = true;
     fileInput.style.display = 'none'; fileInput.id = 'vlog-file-' + topic.id;
     fileInput.onchange = (function(tid) { return function() { handleVlogUpload(tid, this); }; })(topic.id);
-    addBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); document.getElementById('vlog-file-' + tid).click(); }; })(topic.id);
-    var delBtn = document.createElement('button');
-    delBtn.className = 'inspo-body-del-btn';
-    delBtn.textContent = '刪除';
-    delBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); deleteVlogTopic(tid); }; })(topic.id);
-    btnRow.appendChild(addBtn);
+    btnRow.appendChild(editBtn);
     btnRow.appendChild(fileInput);
-    btnRow.appendChild(delBtn);
+    if (isEdit) {
+      var delBtn = document.createElement('button');
+      delBtn.className = 'inspo-body-del-btn';
+      delBtn.textContent = '刪除此主題';
+      delBtn.onclick = (function(tid) { return function(e) { e.stopPropagation(); deleteVlogTopic(tid); }; })(topic.id);
+      btnRow.appendChild(delBtn);
+    }
     body.appendChild(btnRow);
     card.appendChild(body);
     container.appendChild(card);
   });
 }
 
+var _vlogNewPhotos = [];
+function _renderVlogNewStrip() {
+  var strip = document.getElementById('vlog-new-strip');
+  if (!strip) return;
+  strip.innerHTML = '';
+  var tile = document.createElement('div');
+  tile.className = 'pg-img-add-tile';
+  tile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>';
+  tile.onclick = function() { document.getElementById('vlog-new-file').click(); };
+  strip.appendChild(tile);
+  _vlogNewPhotos.forEach(function(src, idx) {
+    var wrap = document.createElement('div'); wrap.className = 'pg-img-item-wrap';
+    var item = document.createElement('div'); item.className = 'pg-img-item';
+    var img = document.createElement('img'); img.src = src; item.appendChild(img); wrap.appendChild(item);
+    var x = document.createElement('button'); x.className = 'pg-img-del-x'; x.textContent = '×';
+    x.onclick = (function(i) { return function(e) { e.stopPropagation(); _vlogNewPhotos.splice(i,1); _renderVlogNewStrip(); }; })(idx);
+    wrap.appendChild(x); strip.appendChild(wrap);
+  });
+}
+function handleVlogNewUpload(input) {
+  if (!input.files || !input.files.length) return;
+  var files = Array.from(input.files).filter(function(f) { return f.type.startsWith('image/'); });
+  var pending = files.length; if (!pending) return;
+  files.forEach(function(file) {
+    var r = new FileReader(); r.onload = function(ev) { _vlogNewPhotos.push(ev.target.result); pending--; if (!pending) _renderVlogNewStrip(); }; r.readAsDataURL(file);
+  });
+  input.value = '';
+}
 function openVlogAddForm() {
   var form = document.getElementById('vlog-add-form');
-  var btn = form.previousElementSibling;
-  form.classList.add('open'); if (btn) btn.style.display = 'none';
+  var btn = document.getElementById('vlog-add-spot-btn');
+  if (form) { form.classList.add('open'); if (btn) btn.style.display = 'none'; }
   setTimeout(function() { var inp = document.getElementById('vlog-topic-input'); if (inp) inp.focus(); }, 50);
 }
 function closeVlogAddForm() {
   var form = document.getElementById('vlog-add-form');
-  var btn = form.previousElementSibling;
-  form.classList.remove('open'); if (btn) btn.style.display = '';
+  var btn = document.getElementById('vlog-add-spot-btn');
+  if (form) { form.classList.remove('open'); if (btn) btn.style.display = ''; }
   var inp = document.getElementById('vlog-topic-input');
+  var sc = document.getElementById('vlog-new-script');
   if (inp) inp.value = '';
+  if (sc) sc.value = '';
+  _vlogNewPhotos = []; _renderVlogNewStrip();
 }
 function confirmAddVlogTopic() {
   var inp = document.getElementById('vlog-topic-input');
   var name = inp ? inp.value.trim() : '';
   if (!name) return;
-  _vlogData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), topic: name, photos: [] });
+  var sc = document.getElementById('vlog-new-script');
+  var script = sc ? sc.value.trim() : '';
+  _vlogData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), topic: name, script: script, photos: _vlogNewPhotos.slice() });
+  _vlogNewPhotos = [];
   _saveVlogLocal();
   if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
   closeVlogAddForm();
@@ -6429,10 +6640,28 @@ function confirmAddVlogTopic() {
 function deleteVlogTopic(topicId) {
   _confirmDelete(function() {
     _vlogData = _vlogData.filter(function(t) { return t.id !== topicId; });
+    _vlogEditIds.delete(topicId);
     _saveVlogLocal();
     if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
     renderVlogSection();
   });
+}
+function toggleVlogEdit(topicId) {
+  if (_vlogEditIds.has(topicId)) {
+    _vlogEditIds.delete(topicId);
+  } else {
+    _vlogEditIds.add(topicId);
+    _vlogOpenIds.add(topicId); // ensure card is open in edit mode
+  }
+  renderVlogSection();
+}
+function deleteVlogPhoto(topicId, photoIdx) {
+  var topic = _vlogData.find(function(t) { return t.id === topicId; });
+  if (!topic) return;
+  topic.photos.splice(photoIdx, 1);
+  _saveVlogLocal();
+  if (typeof _syncVlogToFs === 'function') _syncVlogToFs();
+  renderVlogSection();
 }
 function handleVlogUpload(topicId, input) {
   var topic = _vlogData.find(function(t) { return t.id === topicId; });
@@ -6512,7 +6741,7 @@ function buildPhotoGallery() {
       body.className = 'pg-stop-body';
       body.style.display = 'none';
       var grid = document.createElement('div');
-      grid.className = 'pg-imgs';
+      grid.className = allImgs.length > 6 ? 'pg-imgs two-row' : 'pg-imgs';
       grid.style.padding = '0.8rem 1rem';
       allImgs.forEach(function(src) {
         var item = document.createElement('div');
@@ -6599,6 +6828,7 @@ function openModal(name) {
   document.getElementById('modal-' + name).classList.add('open');
   document.body.style.overflow = 'hidden';
   if (name === 'exchange') fetchRates();
+  if (name === 'expenses') { if (typeof updateSettlement === 'function') updateSettlement(); }
 }
 function closeModal(name) {
   document.getElementById('modal-' + name).classList.remove('open');
@@ -7206,10 +7436,434 @@ function updateSettlement() {
     : '<div class="sett-none">✅ 大家花費均等，不需要互相轉帳！</div>';
 }
 
+/* ══════════════ 必買清單（模塊 → 品項 + 照片）══════════════ */
+var _shopCatData = [];
+var _shopCatOpenIds = new Set();
+var _shopCatEditIds = new Set();
+var _shopItemOpenIds = new Set();
+var _shopItemEditIds = new Set();
+var _shopItemNewPhotos = {};
+try {
+  var _shopRaw = JSON.parse(localStorage.getItem('busan-shop-cats-v2') || '[]');
+  _shopCatData = _shopRaw.map(function(c) {
+    if (!c.items) c.items = [];
+    c.items = c.items.map(function(it) { if (!it.photos) it.photos = []; return it; });
+    return c;
+  });
+} catch(e) { _shopCatData = []; }
+
+function _saveShopCatLocal() {
+  localStorage.setItem('busan-shop-cats-v2', JSON.stringify(_shopCatData));
+}
+
+function renderShopSection() {
+  var container = document.getElementById('shop-content');
+  if (!container) return;
+  container.innerHTML = '';
+  if (_shopCatData.length === 0) {
+    var emp = document.createElement('div');
+    emp.className = 'pg-empty';
+    emp.innerHTML = '🛍️ 還沒有模塊<br><span>點下方「生成新模塊」，開始規劃購物清單！</span>';
+    container.appendChild(emp);
+    return;
+  }
+  _shopCatData.forEach(function(cat, idx) {
+    if (idx > 0) {
+      var div = document.createElement('div'); div.className = 'pg-divider'; container.appendChild(div);
+    }
+    container.appendChild(_renderShopCatCard(cat));
+  });
+}
+
+function _renderShopCatCard(cat) {
+  var isOpen = _shopCatOpenIds.has(cat.id);
+  var isNameEdit = _shopCatEditIds.has(cat.id);
+
+  var card = document.createElement('div');
+  card.className = 'photos-module-card';
+  card.id = 'shop-cat-' + cat.id;
+
+  /* ── 深灰色標題列（品牌 / 店家名稱）── */
+  var hdr = document.createElement('div');
+  hdr.className = 'pg-module-header';
+  hdr.style.cursor = 'default';
+
+  if (isNameEdit) {
+    var nameInput = document.createElement('input');
+    nameInput.type = 'text';
+    nameInput.value = cat.name;
+    nameInput.id = 'shop-cat-name-input-' + cat.id;
+    nameInput.style.cssText = 'flex:1;min-width:0;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.4);border-radius:7px;padding:0.22rem 0.5rem;color:#fff;font-size:0.9rem;font-family:inherit;outline:none;';
+    nameInput.onblur = (function(cid) { return function() { saveShopCatName(cid); }; })(cat.id);
+    nameInput.onkeydown = (function(cid) { return function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveShopCatName(cid); }
+      if (e.key === 'Escape') { _shopCatEditIds.delete(cid); renderShopSection(); }
+    }; })(cat.id);
+    hdr.appendChild(nameInput);
+    setTimeout(function() { var inp = document.getElementById('shop-cat-name-input-' + cat.id); if (inp) { inp.focus(); inp.select(); } }, 30);
+    var rBtns = document.createElement('div');
+    rBtns.style.cssText = 'margin-left:auto;display:flex;gap:0.4rem;flex-shrink:0;';
+    var delCatBtn = document.createElement('button');
+    delCatBtn.className = 'photos-toolbar-btn';
+    delCatBtn.textContent = '刪除此主題';
+    delCatBtn.style.cssText = 'color:#ff9090;border-color:rgba(255,120,120,0.5);';
+    delCatBtn.onmousedown = function(e) { e.preventDefault(); };
+    delCatBtn.onclick = (function(cid) { return function(e) { e.stopPropagation(); deleteShopCat(cid); }; })(cat.id);
+    rBtns.appendChild(delCatBtn);
+    hdr.appendChild(rBtns);
+  } else {
+    var nameSpan = document.createElement('span');
+    nameSpan.textContent = cat.name;
+    nameSpan.style.cssText = 'flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+    hdr.appendChild(nameSpan);
+    var rBtns2 = document.createElement('div');
+    rBtns2.style.cssText = 'margin-left:auto;display:flex;gap:0.4rem;flex-shrink:0;';
+    var editNameBtn = document.createElement('button');
+    editNameBtn.className = 'photos-toolbar-btn';
+    editNameBtn.textContent = '✎ 改名';
+    editNameBtn.onclick = (function(cid) { return function(e) { e.stopPropagation(); _shopCatEditIds.add(cid); _shopCatOpenIds.add(cid); renderShopSection(); }; })(cat.id);
+    var expandBtn = document.createElement('button');
+    expandBtn.className = 'photos-toolbar-btn';
+    expandBtn.textContent = isOpen ? '▴ 收起' : '▾ 展開';
+    expandBtn.onclick = (function(cid) { return function(e) { e.stopPropagation(); toggleShopCat(cid); }; })(cat.id);
+    rBtns2.appendChild(editNameBtn); rBtns2.appendChild(expandBtn);
+    hdr.appendChild(rBtns2);
+  }
+  card.appendChild(hdr);
+
+  /* ── 主體（可折疊）── */
+  var body = document.createElement('div');
+  body.className = 'photos-module-body';
+  body.id = 'shop-body-' + cat.id;
+  body.style.display = isOpen ? 'block' : 'none';
+
+  if (!cat.items) cat.items = [];
+
+  if (cat.items.length === 0) {
+    var emp2 = document.createElement('div');
+    emp2.style.cssText = 'text-align:center;padding:1rem 0 0.5rem;color:#bbb;font-size:0.82rem;';
+    emp2.textContent = '尚無品項，點下方新增';
+    body.appendChild(emp2);
+  } else {
+    cat.items.forEach(function(item) {
+      body.appendChild(_renderShopItemCard(cat, item));
+    });
+  }
+
+  /* 新增小主題表單 */
+  var addWrap = document.createElement('div');
+  addWrap.className = 'inspo-add-spot-wrap';
+  var addItemBtn = document.createElement('button');
+  addItemBtn.className = 'inspo-add-spot-btn';
+  addItemBtn.id = 'shop-item-add-btn-' + cat.id;
+  addItemBtn.textContent = '＋ 新增品項';
+  addItemBtn.onclick = (function(cid) { return function() { openShopItemForm(cid); }; })(cat.id);
+  addWrap.appendChild(addItemBtn);
+
+  var addForm = document.createElement('div');
+  addForm.className = 'inspo-add-form';
+  addForm.id = 'shop-item-form-' + cat.id;
+
+  var itemNameInp = document.createElement('input');
+  itemNameInp.type = 'text';
+  itemNameInp.id = 'shop-item-input-' + cat.id;
+  itemNameInp.placeholder = '品項名稱（例：粉刺痘痘貼、防曬乳）';
+  addForm.appendChild(itemNameInp);
+
+  var newStrip = document.createElement('div');
+  newStrip.className = 'pg-imgs';
+  newStrip.id = 'shop-item-new-strip-' + cat.id;
+  var addTile0 = document.createElement('div');
+  addTile0.className = 'pg-img-add-tile';
+  addTile0.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>';
+  addTile0.onclick = (function(cid) { return function() { document.getElementById('shop-item-new-file-' + cid).click(); }; })(cat.id);
+  newStrip.appendChild(addTile0);
+  addForm.appendChild(newStrip);
+
+  var newFileInp = document.createElement('input');
+  newFileInp.type = 'file'; newFileInp.accept = 'image/*'; newFileInp.multiple = true;
+  newFileInp.style.display = 'none'; newFileInp.id = 'shop-item-new-file-' + cat.id;
+  newFileInp.onchange = (function(cid) { return function() { handleShopItemNewUpload(cid, this); }; })(cat.id);
+  addForm.appendChild(newFileInp);
+
+  var formBtns = document.createElement('div');
+  formBtns.className = 'inspo-form-btns';
+  var cancelB = document.createElement('button');
+  cancelB.className = 'inspo-cancel-btn'; cancelB.textContent = '取消';
+  cancelB.onclick = (function(cid) { return function() { closeShopItemForm(cid); }; })(cat.id);
+  var confirmB = document.createElement('button');
+  confirmB.className = 'inspo-confirm-btn'; confirmB.textContent = '完成';
+  confirmB.onclick = (function(cid) { return function() { confirmAddShopItem(cid); }; })(cat.id);
+  formBtns.appendChild(cancelB); formBtns.appendChild(confirmB);
+  addForm.appendChild(formBtns);
+  addWrap.appendChild(addForm);
+  body.appendChild(addWrap);
+
+  card.appendChild(body);
+  return card;
+}
+
+function _renderShopItemCard(cat, item) {
+  var catId = cat.id; var itemId = item.id;
+  var isItemOpen = _shopItemOpenIds.has(itemId);
+  var isItemEdit = _shopItemEditIds.has(itemId);
+
+  var spot = document.createElement('div');
+  spot.className = 'inspo-spot';
+  spot.id = 'shop-item-spot-' + itemId;
+
+  /* 標題列（點擊展開/收起） */
+  var hdr = document.createElement('div');
+  hdr.className = 'inspo-spot-header';
+  hdr.onclick = (function(cid, iid) { return function() { toggleShopItem(cid, iid); }; })(catId, itemId);
+  var hdrLeft = document.createElement('div');
+  hdrLeft.className = 'inspo-spot-header-left';
+  var nm = document.createElement('div');
+  nm.className = 'inspo-spot-name';
+  nm.textContent = item.name;
+  hdrLeft.appendChild(nm);
+  var acts = document.createElement('div');
+  acts.className = 'inspo-spot-actions';
+  var arrow = document.createElement('span');
+  arrow.className = 'inspo-toggle-arrow' + (isItemOpen ? ' open' : '');
+  arrow.textContent = '▾';
+  acts.appendChild(arrow);
+  hdr.appendChild(hdrLeft); hdr.appendChild(acts);
+  spot.appendChild(hdr);
+
+  /* 主體（照片牆） */
+  var body = document.createElement('div');
+  body.className = 'inspo-spot-body';
+  body.style.display = isItemOpen ? 'block' : 'none';
+
+  var photos = item.photos || [];
+  var strip = document.createElement('div');
+  strip.className = (photos.length > 6) ? 'pg-imgs two-row' : 'pg-imgs';
+  if (isItemEdit) {
+    var addTile = document.createElement('div');
+    addTile.className = 'pg-img-add-tile';
+    addTile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增</span>';
+    addTile.onclick = (function(iid) { return function(e) { e.stopPropagation(); document.getElementById('shop-item-file-' + iid).click(); }; })(itemId);
+    strip.appendChild(addTile);
+  }
+  photos.forEach(function(src, photoIdx) {
+    var wrap = document.createElement('div'); wrap.className = 'pg-img-item-wrap';
+    var imgDiv = document.createElement('div'); imgDiv.className = 'pg-img-item';
+    if (!isItemEdit) imgDiv.onclick = (function(s) { return function() { openLightbox(s); }; })(src);
+    var img = document.createElement('img'); img.src = src; img.loading = 'lazy';
+    imgDiv.appendChild(img); wrap.appendChild(imgDiv);
+    if (isItemEdit) {
+      var xBtn = document.createElement('button'); xBtn.className = 'pg-img-del-x'; xBtn.textContent = '×';
+      xBtn.onclick = (function(cid, iid, idx) { return function(e) { e.stopPropagation(); deleteShopItemPhoto(cid, iid, idx); }; })(catId, itemId, photoIdx);
+      wrap.appendChild(xBtn);
+    }
+    strip.appendChild(wrap);
+  });
+  if (photos.length === 0 && !isItemEdit) {
+    var noPhoto = document.createElement('div');
+    noPhoto.style.cssText = 'color:#ccc;font-size:0.8rem;padding:0.4rem 0 0.2rem;';
+    noPhoto.textContent = '尚無照片';
+    body.appendChild(noPhoto);
+  } else {
+    body.appendChild(strip);
+  }
+
+  /* 隱藏 file input */
+  var fileInp = document.createElement('input');
+  fileInp.type = 'file'; fileInp.accept = 'image/*'; fileInp.multiple = true;
+  fileInp.style.display = 'none'; fileInp.id = 'shop-item-file-' + itemId;
+  fileInp.onchange = (function(cid, iid) { return function() { handleShopItemUpload(cid, iid, this); }; })(catId, itemId);
+  body.appendChild(fileInp);
+
+  /* 按鈕列 */
+  var btnRow = document.createElement('div');
+  btnRow.className = 'inspo-body-btns';
+  var editBtn = document.createElement('button');
+  editBtn.className = isItemEdit ? 'inspo-body-add-btn inspo-body-edit-active' : 'inspo-body-add-btn';
+  editBtn.textContent = isItemEdit ? '完成' : '編輯';
+  editBtn.onclick = (function(cid, iid) { return function(e) { e.stopPropagation(); toggleShopItemEdit(cid, iid); }; })(catId, itemId);
+  btnRow.appendChild(editBtn);
+  if (isItemEdit) {
+    var delBtn = document.createElement('button');
+    delBtn.className = 'inspo-body-del-btn'; delBtn.textContent = '刪除此品項';
+    delBtn.onclick = (function(cid, iid) { return function(e) { e.stopPropagation(); deleteShopItem(cid, iid); }; })(catId, itemId);
+    btnRow.appendChild(delBtn);
+  }
+  body.appendChild(btnRow);
+  spot.appendChild(body);
+  return spot;
+}
+
+function toggleShopCat(catId) {
+  if (_shopCatOpenIds.has(catId)) { _shopCatOpenIds.delete(catId); } else { _shopCatOpenIds.add(catId); }
+  renderShopSection();
+}
+function saveShopCatName(catId) {
+  if (!_shopCatEditIds.has(catId)) return; // prevent double-fire
+  var inp = document.getElementById('shop-cat-name-input-' + catId);
+  var name = inp ? inp.value.trim() : '';
+  var cat = _shopCatData.find(function(c) { return c.id === catId; });
+  if (cat && name) { cat.name = name; _saveShopCatLocal(); if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs(); }
+  _shopCatEditIds.delete(catId);
+  renderShopSection();
+}
+function deleteShopCat(catId) {
+  _shopCatEditIds.delete(catId); // exit edit mode first to avoid re-render issues
+  _confirmDelete(function() {
+    _shopCatData = _shopCatData.filter(function(c) { return c.id !== catId; });
+    _shopCatOpenIds.delete(catId);
+    _saveShopCatLocal();
+    if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs();
+    renderShopSection();
+  });
+}
+function toggleShopItem(catId, itemId) {
+  if (_shopItemOpenIds.has(itemId)) { _shopItemOpenIds.delete(itemId); } else { _shopItemOpenIds.add(itemId); }
+  renderShopSection();
+}
+function toggleShopItemEdit(catId, itemId) {
+  if (_shopItemEditIds.has(itemId)) { _shopItemEditIds.delete(itemId); } else { _shopItemEditIds.add(itemId); _shopItemOpenIds.add(itemId); }
+  renderShopSection();
+}
+function deleteShopItem(catId, itemId) {
+  _confirmDelete(function() {
+    var cat = _shopCatData.find(function(c) { return c.id === catId; });
+    if (!cat) return;
+    cat.items = (cat.items||[]).filter(function(i) { return i.id !== itemId; });
+    _shopItemEditIds.delete(itemId); _shopItemOpenIds.delete(itemId);
+    _saveShopCatLocal();
+    if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs();
+    renderShopSection();
+  });
+}
+function deleteShopItemPhoto(catId, itemId, photoIdx) {
+  var cat = _shopCatData.find(function(c) { return c.id === catId; });
+  if (!cat) return;
+  var item = (cat.items||[]).find(function(i) { return i.id === itemId; });
+  if (!item) return;
+  item.photos.splice(photoIdx, 1);
+  _saveShopCatLocal();
+  if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs();
+  renderShopSection();
+}
+function handleShopItemUpload(catId, itemId, input) {
+  var cat = _shopCatData.find(function(c) { return c.id === catId; });
+  if (!cat) return;
+  var item = (cat.items||[]).find(function(i) { return i.id === itemId; });
+  if (!item || !input.files || !input.files.length) return;
+  if (!item.photos) item.photos = [];
+  var files = Array.from(input.files).filter(function(f) { return f.type.startsWith('image/'); });
+  var pending = files.length; if (!pending) return;
+  files.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var dataUrl = ev.target.result;
+      if (typeof _fst !== 'undefined') {
+        var path = 'shop-imgs/' + catId + '/' + itemId + '/' + Date.now() + '_' + Math.random().toString(36).slice(2);
+        _fst.ref(path).putString(dataUrl, 'data_url').then(function() { return _fst.ref(path).getDownloadURL(); })
+          .then(function(url) { item.photos.push(url); pending--; if (!pending) { _saveShopCatLocal(); if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs(); renderShopSection(); } })
+          .catch(function() { item.photos.push(dataUrl); pending--; if (!pending) { _saveShopCatLocal(); renderShopSection(); } });
+      } else { item.photos.push(dataUrl); pending--; if (!pending) { _saveShopCatLocal(); renderShopSection(); } }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function _renderShopItemNewStrip(catId) {
+  var strip = document.getElementById('shop-item-new-strip-' + catId);
+  if (!strip) return;
+  var photos = _shopItemNewPhotos[catId] || [];
+  strip.className = (photos.length > 6) ? 'pg-imgs two-row' : 'pg-imgs';
+  strip.innerHTML = '';
+  var tile = document.createElement('div');
+  tile.className = 'pg-img-add-tile';
+  tile.innerHTML = '<span style="font-size:1.5rem;line-height:1;color:#bbb">＋</span><span style="font-size:0.7rem;color:#bbb;margin-top:0.05rem">新增照片</span>';
+  tile.onclick = (function(cid) { return function() { document.getElementById('shop-item-new-file-' + cid).click(); }; })(catId);
+  strip.appendChild(tile);
+  photos.forEach(function(src, idx) {
+    var wrap = document.createElement('div'); wrap.className = 'pg-img-item-wrap';
+    var imgDiv = document.createElement('div'); imgDiv.className = 'pg-img-item';
+    var img = document.createElement('img'); img.src = src; imgDiv.appendChild(img); wrap.appendChild(imgDiv);
+    var x = document.createElement('button'); x.className = 'pg-img-del-x'; x.textContent = '×';
+    x.onclick = (function(cid, i) { return function(e) { e.stopPropagation(); (_shopItemNewPhotos[cid]||[]).splice(i,1); _renderShopItemNewStrip(cid); }; })(catId, idx);
+    wrap.appendChild(x); strip.appendChild(wrap);
+  });
+}
+function handleShopItemNewUpload(catId, input) {
+  if (!input.files || !input.files.length) return;
+  if (!_shopItemNewPhotos[catId]) _shopItemNewPhotos[catId] = [];
+  var files = Array.from(input.files).filter(function(f) { return f.type.startsWith('image/'); });
+  var pending = files.length; if (!pending) return;
+  files.forEach(function(file) {
+    var r = new FileReader();
+    r.onload = function(ev) { _shopItemNewPhotos[catId].push(ev.target.result); pending--; if (!pending) _renderShopItemNewStrip(catId); };
+    r.readAsDataURL(file);
+  });
+  input.value = '';
+}
+function openShopItemForm(catId) {
+  _shopCatOpenIds.add(catId);
+  var form = document.getElementById('shop-item-form-' + catId);
+  var btn = document.getElementById('shop-item-add-btn-' + catId);
+  if (form) { form.classList.add('open'); if (btn) btn.style.display = 'none'; }
+  _shopItemNewPhotos[catId] = [];
+  _renderShopItemNewStrip(catId);
+  setTimeout(function() { var inp = document.getElementById('shop-item-input-' + catId); if (inp) inp.focus(); }, 50);
+}
+function closeShopItemForm(catId) {
+  var form = document.getElementById('shop-item-form-' + catId);
+  var btn = document.getElementById('shop-item-add-btn-' + catId);
+  var inp = document.getElementById('shop-item-input-' + catId);
+  if (form) { form.classList.remove('open'); if (btn) btn.style.display = ''; }
+  if (inp) inp.value = '';
+  _shopItemNewPhotos[catId] = [];
+  _renderShopItemNewStrip(catId);
+}
+function confirmAddShopItem(catId) {
+  var inp = document.getElementById('shop-item-input-' + catId);
+  var name = inp ? inp.value.trim() : '';
+  if (!name) return;
+  var cat = _shopCatData.find(function(c) { return c.id === catId; });
+  if (!cat) return;
+  if (!cat.items) cat.items = [];
+  cat.items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), name: name, photos: (_shopItemNewPhotos[catId]||[]).slice() });
+  _shopItemNewPhotos[catId] = [];
+  _saveShopCatLocal();
+  if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs();
+  closeShopItemForm(catId);
+  renderShopSection();
+}
+function expandShop() { _shopCatData.forEach(function(c) { _shopCatOpenIds.add(c.id); }); renderShopSection(); }
+function collapseShop() { _shopCatData.forEach(function(c) { _shopCatOpenIds.delete(c.id); }); renderShopSection(); }
+function openShopAddForm() {
+  var form = document.getElementById('shop-add-form');
+  var btn = document.getElementById('shop-add-spot-btn');
+  if (form) { form.classList.add('open'); if (btn) btn.style.display = 'none'; }
+  setTimeout(function() { var inp = document.getElementById('shop-cat-input'); if (inp) inp.focus(); }, 50);
+}
+function closeShopAddForm() {
+  var form = document.getElementById('shop-add-form');
+  var btn = document.getElementById('shop-add-spot-btn');
+  var inp = document.getElementById('shop-cat-input');
+  if (form) { form.classList.remove('open'); if (btn) btn.style.display = ''; }
+  if (inp) inp.value = '';
+}
+function confirmAddShopCat() {
+  var inp = document.getElementById('shop-cat-input');
+  var name = inp ? inp.value.trim() : '';
+  if (!name) return;
+  _shopCatData.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,5), name: name, items: [] });
+  _saveShopCatLocal();
+  if (typeof _syncShopCatToFs === 'function') _syncShopCatToFs();
+  closeShopAddForm();
+  renderShopSection();
+}
+
 /* ─── Init ─── */
 loadChecklist();
 loadPackItems();
 loadShop();
+renderShopSection();
 loadExpenses();
 fetchHeroWeather();
 fetchRates();
@@ -7316,6 +7970,12 @@ loadUserTips();
   }
   window._syncVlogToFs = _syncVlogToFs;
 
+  function _syncShopCatToFs() {
+    _doc.set({ shopCats: JSON.stringify(_shopCatData) }, { merge: true })
+      .catch(function(e) { console.warn('shopCat sync failed:', e); });
+  }
+  window._syncShopCatToFs = _syncShopCatToFs;
+
   /* ── 覆寫 save functions（本地儲存後同步到 Firestore）── */
   var _oShop = saveShop;
   saveShop = function() { _oShop(); fsSet({ shop: shopItems }); };
@@ -7395,6 +8055,17 @@ loadUserTips();
         }
       } catch(e) {}
     }
+    // 必買清單類別（即時同步）
+    if (d.shopCats) {
+      try {
+        var shopCatIn = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; });
+        if (JSON.stringify(shopCatIn) !== JSON.stringify(_shopCatData)) {
+          _shopCatData = shopCatIn;
+          localStorage.setItem('busan-shop-cats-v2', d.shopCats);
+          if (typeof renderShopSection === 'function') renderShopSection();
+        }
+      } catch(e) {}
+    }
     // 圖片（即時同步）
     if (d.noteImages) {
       try {
@@ -7432,6 +8103,10 @@ loadUserTips();
     // VLOG初始載入
     if (d.vlogInspo) {
       try { _vlogData = JSON.parse(d.vlogInspo); localStorage.setItem('busan-vlog-v1', d.vlogInspo); } catch(e) {}
+    }
+    // 必買清單類別初始載入
+    if (d.shopCats) {
+      try { _shopCatData = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; }); localStorage.setItem('busan-shop-cats-v1', d.shopCats); if (typeof renderShopSection === 'function') renderShopSection(); } catch(e) {}
     }
     // 靈感資料初始載入
     if (d.photoInspo) {
