@@ -7970,8 +7970,11 @@ loadUserTips();
   }
   window._syncVlogToFs = _syncVlogToFs;
 
+  var _shopCatsLastWrite = 0;
   function _syncShopCatToFs() {
-    _doc.set({ shopCats: JSON.stringify(_shopCatData) }, { merge: true })
+    var ts = Date.now();
+    _shopCatsLastWrite = ts;
+    _doc.set({ shopCats: JSON.stringify(_shopCatData), shopCatsTs: ts }, { merge: true })
       .catch(function(e) { console.warn('shopCat sync failed:', e); });
   }
   window._syncShopCatToFs = _syncShopCatToFs;
@@ -8055,14 +8058,20 @@ loadUserTips();
         }
       } catch(e) {}
     }
-    // 必買清單類別（即時同步）
+    // 必買清單類別（即時同步）— 用時間戳確認是否為本機自己的回音，避免覆蓋最新資料
     if (d.shopCats) {
       try {
-        var shopCatIn = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; });
-        if (JSON.stringify(shopCatIn) !== JSON.stringify(_shopCatData)) {
-          _shopCatData = shopCatIn;
-          localStorage.setItem('busan-shop-cats-v2', d.shopCats);
-          if (typeof renderShopSection === 'function') renderShopSection();
+        var incomingTs = d.shopCatsTs || 0;
+        // 跳過：收到的快照時間戳 ≤ 我們最後一次寫入時間（自己的回音或更舊的資料）
+        if (incomingTs > 0 && incomingTs <= _shopCatsLastWrite) {
+          // 自己的寫入回音或舊資料，略過
+        } else {
+          var shopCatIn = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; });
+          if (JSON.stringify(shopCatIn) !== JSON.stringify(_shopCatData)) {
+            _shopCatData = shopCatIn;
+            localStorage.setItem('busan-shop-cats-v2', d.shopCats);
+            if (typeof renderShopSection === 'function') renderShopSection();
+          }
         }
       } catch(e) {}
     }
@@ -8106,7 +8115,7 @@ loadUserTips();
     }
     // 必買清單類別初始載入
     if (d.shopCats) {
-      try { _shopCatData = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; }); localStorage.setItem('busan-shop-cats-v1', d.shopCats); if (typeof renderShopSection === 'function') renderShopSection(); } catch(e) {}
+      try { _shopCatData = JSON.parse(d.shopCats).map(function(c) { if (!c.items) c.items = []; return c; }); localStorage.setItem('busan-shop-cats-v2', d.shopCats); if (typeof renderShopSection === 'function') renderShopSection(); } catch(e) {}
     }
     // 靈感資料初始載入
     if (d.photoInspo) {
